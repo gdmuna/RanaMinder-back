@@ -7,8 +7,9 @@
   },
   "dependencies": {
     "alova": "^3.3.4",
+    "casdoor-nodejs-sdk": "^1.28.0",
     "cookie-parser": "~1.4.4",
-    "cros": "^1.1.0",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "debug": "~2.6.9",
     "dotenv": "^17.2.1",
