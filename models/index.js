@@ -37,6 +37,8 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+console.log('Loaded models:', Object.keys(models));
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

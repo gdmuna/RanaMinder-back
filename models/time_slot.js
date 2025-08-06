@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class time_slot extends Model {
+  class Time_slot extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -21,16 +21,36 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  time_slot.init({
-    seesion_id: DataTypes.INTEGER,
-    start_time: DataTypes.DATE,
-    end_time: DataTypes.DATE,
-    max_seats: DataTypes.INTEGER,
-    reserved_seats: DataTypes.INTEGER,
-    is_avaliable: DataTypes.BOOLEAN
+  Time_slot.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    seesion_id: {
+      type: DataTypes.INTEGER
+    },
+    start_time: {
+      type: DataTypes.DATE
+    },
+    end_time: {
+      type: DataTypes.DATE
+    },
+    max_seats: {
+      type: DataTypes.INTEGER
+    },
+    reserved_seats: {
+      type: DataTypes.INTEGER
+    },
+    is_avaliable: {
+      type: DataTypes.BOOLEAN
+    }
   }, {
     sequelize,
     modelName: 'Time_slot',
+    tableName: 'time_slots',
+    timestamps: true
   });
-  return time_slot;
+  return Time_slot;
 };

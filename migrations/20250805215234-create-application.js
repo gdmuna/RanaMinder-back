@@ -10,16 +10,28 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       user_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'       
+        },
       },
       campagin_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'campaigns', 
+          key: 'id'           
+        },
       },
-      std_id: {
-        type: Sequelize.STRING
+      stu_id: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       information: {
-        type: Sequelize.JSON
+        type: Sequelize.JSON,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

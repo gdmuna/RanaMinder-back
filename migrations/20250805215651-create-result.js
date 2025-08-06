@@ -10,13 +10,28 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       application_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'applications', 
+          key: 'id'              
+        },
       },
       user_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
       },
       campagin_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'campaigns', 
+          key: 'id'           
+        },
       },
       department: {
         type: Sequelize.STRING
@@ -25,7 +40,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       status: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM('pending', 'approved', 'rejected'), 
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

@@ -10,10 +10,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       stu_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(11),
+        allowNull: false,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(50),
+        allowNull: false,
       },
       oss_id: {
         type: Sequelize.STRING

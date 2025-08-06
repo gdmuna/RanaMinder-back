@@ -10,22 +10,30 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       campagin_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'campaigns', 
+          key: 'id'
+        },
       },
       title: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       selection_type: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM('user', 'admin')
       },
       sort_order: {
         type: Sequelize.TINYINT
       },
       is_required: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,

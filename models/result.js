@@ -3,16 +3,16 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class result extends Model {
+  class Result extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.hasOne(models.Application, {
+      this.belongsTo(models.Application, {
         foreignKey: 'application_id',
-        sourceKey: 'id',
+        targetKey: 'id',
       });
       this.belongsTo(models.User, {
         foreignKey: 'user_id',
@@ -24,16 +24,42 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  result.init({
-    application_id: DataTypes.INTEGER,
-    user_id: DataTypes.INTEGER,
-    campagin_id: DataTypes.INTEGER,
-    department: DataTypes.STRING,
-    role: DataTypes.STRING,
-    status: DataTypes.ENUM
+  Result.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    application_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    campagin_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    department: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Result',
+    tableName: 'results',
+    timestamps: true
   });
-  return result;
+  return Result;
 };
