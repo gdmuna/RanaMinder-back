@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-       console.log('Available models in User.associate:', Object.keys(models));
+
       this.hasMany(models.Application, {
         foreignKey: 'user_id',
         sourceKey: 'id',
@@ -20,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'id',
       });
       this.hasMany(models.User_selection, {
-        foreignKey: 'user_id',
-        sourceKey: 'id',
-      });
-      this.hasMany(models.Interview, {
         foreignKey: 'user_id',
         sourceKey: 'id',
       });
