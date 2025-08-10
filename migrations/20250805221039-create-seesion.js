@@ -21,16 +21,17 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      date: {
+      start_time: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      end_time: {
         type: Sequelize.DATE,
         allowNull: false
       },
       location: {
         type: Sequelize.STRING,
         allowNull: false
-      },
-      max_capacity: {
-        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

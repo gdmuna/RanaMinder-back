@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Stage, {
-        foreignKey: 'campagin_id',
+        foreignKey: 'campaign_id',
         sourceKey: 'id',
       });
       this.hasMany(models.Application, {
-        foreignKey: 'campagin_id',
+        foreignKey: 'campaign_id',
         sourceKey: 'id',
       });
       this.hasMany(models.Result, {
-        foreignKey: 'campagin_id',
+        foreignKey: 'campaign_id',
         sourceKey: 'id',
       });
     }

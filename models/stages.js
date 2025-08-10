@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'id',
       });
       this.belongsTo(models.Campaign, {
-        foreignKey: 'campagin_id',
+        foreignKey: 'campaign_id',
         targetKey: 'id',
       });
     }
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    campagin_id: {
+    campaign_id: {
       type: DataTypes.INTEGER
     },
     title: {
@@ -35,9 +35,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     description: {
       type: DataTypes.STRING
-    },
-    selection_type: {
-      type: DataTypes.ENUM('user', 'admin')
     },
     sort_order: {
       type: DataTypes.TINYINT

@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      campagin_id: {
+      campaign_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -24,9 +24,6 @@ module.exports = {
       description: {
         type: Sequelize.STRING,
         allowNull: false
-      },
-      selection_type: {
-        type: Sequelize.ENUM('user', 'admin')
       },
       sort_order: {
         type: Sequelize.TINYINT

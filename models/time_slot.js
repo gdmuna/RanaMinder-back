@@ -40,10 +40,10 @@ module.exports = (sequelize, DataTypes) => {
     max_seats: {
       type: DataTypes.INTEGER
     },
-    reserved_seats: {
+    boked_seats: {
       type: DataTypes.INTEGER
     },
-    is_avaliable: {
+    is_available: {
       type: DataTypes.BOOLEAN
     }
   }, {

@@ -28,11 +28,11 @@ module.exports = {
       max_seats: {
         type: Sequelize.INTEGER
       },
-      reserved_seats: {
+      booked_seats: {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
-      is_avaliable: {
+      is_available: {
         type: Sequelize.BOOLEAN,
         defaultValue: true
       },

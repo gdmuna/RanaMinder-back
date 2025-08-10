@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "reset-db": "cross-env NODE_ENV=development sequelize db:migrate:undo:all && cross-env NODE_ENV=development sequelize db:migrate",
+    "reset-seed": "cross-env NODE_ENV=development sequelize db:seed:undo:all && cross-env NODE_ENV=development sequelize db:seed:all"
   },
   "dependencies": {
     "alova": "^3.3.4",

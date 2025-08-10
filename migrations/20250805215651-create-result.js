@@ -17,21 +17,16 @@ module.exports = {
           key: 'id'              
         },
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
-      },
-      campagin_id: {
+      campaign_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'campaigns', 
           key: 'id'           
         },
+      },
+      association: {
+        type: Sequelize.STRING
       },
       department: {
         type: Sequelize.STRING

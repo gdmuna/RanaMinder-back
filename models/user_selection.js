@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     selection_status: {
-      type: DataTypes.STRING
+      type: DataTypes.ENUM('pending', 'confirmed', 'cancelled'),
     }
   }, {
     sequelize,

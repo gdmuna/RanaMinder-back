@@ -9,6 +9,8 @@ const applicationController = require('../controllers/application');
 
 // 获取所有申请表
 router.get('/', applicationController.getAllApplications);
+// 创建新的申请表
+router.post('/', applicationController.creatNewApplication);
 
 
 module.exports = router;

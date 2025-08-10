@@ -17,8 +17,16 @@ module.exports = {
         type: Sequelize.STRING(50),
         allowNull: false,
       },
-      oss_id: {
-        type: Sequelize.STRING
+      sso_id: {
+        type: Sequelize.UUID
+      },
+      last_signin_time: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      is_forzen: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

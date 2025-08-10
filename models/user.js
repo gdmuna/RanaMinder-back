@@ -41,8 +41,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(50),
       allowNull: false
     },
-    oss_id: {
-      type: DataTypes.STRING
+    sso_id: {
+      type: DataTypes.UUID
+    },
+    last_signin_time: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    is_forzen: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     sequelize,

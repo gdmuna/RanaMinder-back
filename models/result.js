@@ -14,12 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'application_id',
         targetKey: 'id',
       });
-      this.belongsTo(models.User, {
-        foreignKey: 'user_id',
-        targetKey: 'id',
-      });
       this.belongsTo(models.Campaign, {
-        foreignKey: 'campagin_id',
+        foreignKey: 'campaign_id',
         targetKey: 'id',
       });
     }
@@ -35,13 +31,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    user_id: {
+    campaign_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    campagin_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+    association: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     department: {
       type: DataTypes.STRING,

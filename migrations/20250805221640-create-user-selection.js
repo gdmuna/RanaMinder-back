@@ -26,7 +26,7 @@ module.exports = {
         }
       },
       selection_status: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM('pending', 'confirmed', 'cancelled'),
       },
       createdAt: {
         allowNull: false,

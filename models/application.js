@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'campaign_id',
         targetKey: 'id',
       });
+      this.hasOne(models.Result, {
+         foreignKey: 'application_id' 
+      });
     }
   }
   Application.init({

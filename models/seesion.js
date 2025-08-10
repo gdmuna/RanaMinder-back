@@ -33,15 +33,17 @@ module.exports = (sequelize, DataTypes) => {
     title: {
       type: DataTypes.STRING
     },
-    date: {
-      type: DataTypes.DATE
+    start_time: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    end_time: {
+      type: DataTypes.DATE,
+      allowNull: false
     },
     location: {
       type: DataTypes.STRING
     },
-    max_capacity: {
-      type: DataTypes.INTEGER
-    }
   }, {
     sequelize,
     modelName: 'Seesion',
