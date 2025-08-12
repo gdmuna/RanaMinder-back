@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     max_seats: {
       type: DataTypes.INTEGER
     },
-    boked_seats: {
+    booked_seats: {
       type: DataTypes.INTEGER
     },
     is_available: {

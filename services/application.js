@@ -1,4 +1,4 @@
-const { Application,User , Result, sequelize } = require('../models');
+const { Application, User, Campaign, Result, sequelize } = require('../models');
 const AppError = require('../utils/AppError');
 
 /**
@@ -9,7 +9,7 @@ const AppError = require('../utils/AppError');
  * @returns {Promise<Object>} 返回申请表数据
  */
 
-exports. getAllApplications = async (req) => {
+exports.getAllApplications = async (req) => {
 
     const query = req.query || {};
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
@@ -23,13 +23,13 @@ exports. getAllApplications = async (req) => {
         limit: pageSize,
     };
 
-    const { count, rows }  = await Application.findAndCountAll(condition);
+    const { count, rows } = await Application.findAndCountAll(condition);
 
     const totalPages = Math.ceil(count / pageSize);
     const applications = rows;
 
     if (!applications || applications.length === 0) {
-      throw new AppError('没有查询到申请表',401, 'NO_APPLICATION');
+        throw new AppError('没有查询到申请表', 401, 'NO_APPLICATION');
     }
 
     return {
@@ -50,11 +50,21 @@ exports.creatNewApplication = async (data, stu_id) => {
         attributes: ['id'],
     }).then(user => user ? user.id : null);
     if (!user_id) {
-        throw new AppError('用户不存在', 404,'USER_NOT_FOUND');
+        throw new AppError('用户不存在', 404, 'USER_NOT_FOUND');
     }
 
-     data.user_id = user_id;
-     data.stu_id = stu_id;
+    // 检查面试是否存在
+    const campaign = await Campaign.findByPk(data.campaign_id);
+    if (!campaign) {
+        throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
+    }
+    // 检查面试是否在报名时间内
+   if(campaign.is_active === false) {
+        throw new AppError('该面试尚未开始报名', 403, 'CAMPAIGN_NOT_STARTED');
+    }
+
+    data.user_id = user_id;
+    data.stu_id = stu_id;
 
     return await sequelize.transaction(async (t) => {
         const existingApplication = await Application.findOne({
@@ -66,12 +76,12 @@ exports.creatNewApplication = async (data, stu_id) => {
         });
 
         if (existingApplication) {
-            throw new AppError('你已提交过该活动的申请表',409, 'APPLICATION_EXISTS');
+            throw new AppError('你已提交过该面试的申请表', 409, 'APPLICATION_EXISTS');
         }
 
         const newApplication = await Application.create(data, { transaction: t });
         if (!newApplication) {
-            throw new AppError('申请表创建失败',500, 'APPLICATION_CREATION_FAILED');
+            throw new AppError('申请表创建失败', 500, 'APPLICATION_CREATION_FAILED');
         }
 
         await newApplication.createResult({
@@ -84,4 +94,38 @@ exports.creatNewApplication = async (data, stu_id) => {
 
         return newApplication;
     });
+}
+
+// 获取特定面试的申请表
+exports.getCampaignApplications = async (req, campaignId) => {
+    const query = req.query || {};
+    const currentPage = Math.abs(Number(query.currentPage)) || 1;
+    const pageSize = Math.abs(Number(query.pageSize)) || 10;
+    const offset = (currentPage - 1) * pageSize;
+    // 检查面试是否存在
+    const campaign = await Campaign.findByPk(campaignId);
+    if (!campaign) {
+        throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
+    }
+
+    const { count, rows } = await Application.findAndCountAll({
+        where: { campaign_id: campaignId },
+        order: [['createdAt', 'DESC']],
+        offset,
+        limit: pageSize,
+    });
+    const totalPages = Math.ceil(count / pageSize);
+    const applications = rows;
+    if (!applications || applications.length === 0) {
+        throw new AppError('没有查询到申请表', 404, 'NO_APPLICATION');
+    }
+    return {
+        pagination: {
+            currentPage,             // 当前页
+            pageSize,                // 每页记录数
+            totalRecords: count,     // 总记录数
+            totalPages,              // 总页数
+        },
+        applications
+    };
 }

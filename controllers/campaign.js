@@ -31,3 +31,18 @@ exports.createNewCampaign = async (req, res, next) => {
         next(error);
     }
 };
+
+// 更新面试信息
+exports.updateCampaign = async (req, res, next) => {
+    try {
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+            throw new AppError('您没有权限更新面试', 403, 'NO_PERMISSION');
+        }
+        const campaignId = req.params.id;
+        const data = req.body;
+        const updatedCampaign = await campaignService.updateCampaign(campaignId, data);
+        return res.success(updatedCampaign, '面试更新成功', 'CAMPAIGN_UPDATED');
+    } catch (error) {
+        next(error);
+    }
+};
