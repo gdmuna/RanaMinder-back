@@ -10,6 +10,7 @@ module.exports = {
         description:"2025年社团招新，欢迎各位同学加入我们的大家庭！",
         start_date:"2025-09-01",
         end_date:"2025-09-30",
+        is_active: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -19,6 +20,7 @@ module.exports = {
         description:"2026年干事招新，欢迎各位同学加入我们的大家庭！",
         start_date:"2026-7-01",
         end_date:"2026-7-15",
+        is_active: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -28,6 +30,7 @@ module.exports = {
         description:"2027年社团招新，欢迎各位同学加入我们的大家庭！",
         start_date:"2026-09-01",
         end_date:"2026-09-30",
+        is_active: false,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -37,6 +40,7 @@ module.exports = {
         description:"2027年干事招新，欢迎各位同学加入我们的大家庭！",
         start_date:"2027-7-01",
         end_date:"2027-7-15",
+        is_active: false,
         createdAt: new Date(),
         updatedAt: new Date()
       }

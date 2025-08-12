@@ -29,7 +29,7 @@ exports. getAllApplications = async (req) => {
     const applications = rows;
 
     if (!applications || applications.length === 0) {
-      throw new AppError('没有查询到申请表', 'NO_APPLICATION');
+      throw new AppError('没有查询到申请表',401, 'NO_APPLICATION');
     }
 
     return {
@@ -50,7 +50,7 @@ exports.creatNewApplication = async (data, stu_id) => {
         attributes: ['id'],
     }).then(user => user ? user.id : null);
     if (!user_id) {
-        throw new AppError('用户不存在', 'USER_NOT_FOUND');
+        throw new AppError('用户不存在', 404,'USER_NOT_FOUND');
     }
 
      data.user_id = user_id;
@@ -66,12 +66,12 @@ exports.creatNewApplication = async (data, stu_id) => {
         });
 
         if (existingApplication) {
-            throw new AppError('你已提交过该活动的申请表', 'APPLICATION_EXISTS');
+            throw new AppError('你已提交过该活动的申请表',409, 'APPLICATION_EXISTS');
         }
 
         const newApplication = await Application.create(data, { transaction: t });
         if (!newApplication) {
-            throw new AppError('申请表创建失败', 'APPLICATION_CREATION_FAILED');
+            throw new AppError('申请表创建失败',500, 'APPLICATION_CREATION_FAILED');
         }
 
         await newApplication.createResult({

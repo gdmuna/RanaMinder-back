@@ -1,0 +1,33 @@
+const campaignService = require('../services/campaign');
+
+/**
+ * @description 面试控制器
+ * @module controllers/campaign
+ */
+
+// 获取所有面试
+exports.getAllCampaigns = async (req, res, next) => {
+    try {
+        const result = await campaignService.getAllCampaigns(req);
+        if (!result.campaigns || result.campaigns.length === 0) {
+            return res.success(result, '没有查询到相关面试', 'CAMPAIGN_NOT_FOUND');
+        }
+        return res.success(result, '查询成功', 'SUCCESS');
+    } catch (error) {
+        next(error);
+    }
+};
+
+// 创建新的面试
+exports.createNewCampaign = async (req, res, next) => {
+    try {
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+            throw new AppError('您没有权限发送消息', 403, 'NO_PERMISSION');
+        }
+        const data = req.body;
+        const newCampaign = await campaignService.createNewCampaign(data);
+        return res.success(newCampaign, '面试创建成功', 'CAMPAIGN_CREATED');
+    } catch (error) {
+        next(error);
+    }
+};
