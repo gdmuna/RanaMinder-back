@@ -9,9 +9,10 @@ const router = express.Router();
 
 // 获取seesion时间段
 router.get('/:seesion_id', time_slotController.getTimeSlotsBySeesionId);
-// // 创建新的时间段
-// router.post('/', time_slotController.createNewTimeSlot);
+// 创建新的时间段
+router.post('/', time_slotController.createNewTimeSlot);
 // // 更新时间段信息
 // router.put('/:id', time_slotController.updateTimeSlot);
-
+// 删除时间段
+router.delete('/:id', time_slotController.deleteTimeSlot);
 module.exports = router;

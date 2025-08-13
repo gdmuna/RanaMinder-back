@@ -88,8 +88,6 @@ exports.updateStage = async (id, data) => {
     if (!data.title && !data.campaign_id && !data.description && !data.sort_order && !data.is_required) {
         throw new AppError('参数缺失，必须要填写更新参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
-
-    // 更新阶段信息
     const updatedStage = await stage.update(data);
     return updatedStage;
 }

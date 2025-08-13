@@ -1,4 +1,5 @@
 const {Time_slot,Seesion, sequelize} = require('../models');
+const { Op } = require('sequelize');
 const AppError = require('../utils/AppError');
 
 /**
@@ -24,4 +25,88 @@ exports.getTimeSlotsBySeesionId = async (seesion_id) => {
     return {
         time_slots
     };
+}
+
+/**
+ * @description 创建新的时间段
+ * @param {Object} data - 时间段数据
+ * @return {Promise<Object>} 返回新创建的时间段数据
+ */
+exports.createNewTimeSlot = async (data) => {
+    const { seesion_id, start_time, end_time, max_seats } = data;
+    // 检查必填字段
+    if (!seesion_id || !start_time || !end_time || !max_seats) {
+        throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
+    }
+    // 检查面试节点是否存在
+    const seesion = await Seesion.findByPk(seesion_id);
+    if (!seesion) {
+        throw new AppError('指定的seesion不存在', 404, 'SEESION_NOT_FOUND');
+    }
+
+    const start = new Date(start_time);
+    const end = new Date(end_time);
+
+    // 检查时间顺序
+    if (start >= end) {
+        throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+    }
+
+    // 检查时间段是否在seesion时间范围内
+    if (start < seesion.start_time || end > seesion.end_time) {
+        throw new AppError('时间段必须在对应seesion的时间范围内', 400, 'TIME_SLOT_OUT_OF_SEESION');
+    }
+
+    // 检查时间段是否与已有时间段冲突
+    const existingTimeSlot = await Time_slot.findOne({
+        where: {
+            seesion_id,
+            [Op.or]: [
+                {
+                    start_time: {
+                        [Op.lt]: end,
+                        [Op.gte]: start
+                    }
+                },
+                {
+                    end_time: {
+                        [Op.lte]: end,
+                        [Op.gt]: start
+                    }
+                },
+                {
+                    start_time: {
+                        [Op.lte]: start
+                    },
+                    end_time: {
+                        [Op.gte]: end
+                    }
+                }
+            ]
+        }
+    });
+    if (existingTimeSlot) {
+        throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
+    }
+
+    // 创建新时间段
+    const newTimeSlot = await Time_slot.create({
+        seesion_id,
+        start_time: start,
+        end_time: end,
+        max_seats: max_seats,
+        booked_seats: 0,
+        is_available: true
+    });
+    return newTimeSlot;
+}
+
+//删除时间段
+exports.deleteTimeSlot = async (id) => {
+    const timeSlot = await Time_slot.findByPk(id);
+    if (!timeSlot) {
+        throw new AppError('时间段不存在', 404, 'TIME_SLOT_NOT_FOUND');
+    }
+    await timeSlot.destroy();
+    return { message: '时间段已删除' };
 }
