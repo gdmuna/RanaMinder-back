@@ -44,10 +44,17 @@ module.exports = (sequelize, DataTypes) => {
     location: {
       type: DataTypes.STRING
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null
+    }
   }, {
     sequelize,
     modelName: 'Seesion',
     tableName: 'seesions',
+    paranoid: true,
+    deletedAt: 'deletedAt',
     timestamps: true
   });
   return Seesion;

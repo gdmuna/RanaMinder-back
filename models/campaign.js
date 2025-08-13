@@ -50,11 +50,18 @@ module.exports = (sequelize, DataTypes) => {
     is_active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
-    }
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null
+    },
   }, {
     sequelize,
     modelName: 'Campaign',
     tableName: 'campaigns',
+    paranoid: true, 
+    deletedAt: 'deletedAt',
     timestamps: true
   });
   return Campaign;

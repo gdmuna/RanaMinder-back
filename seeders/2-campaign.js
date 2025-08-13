@@ -11,6 +11,7 @@ module.exports = {
         start_date:"2025-09-01",
         end_date:"2025-09-30",
         is_active: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -21,6 +22,7 @@ module.exports = {
         start_date:"2026-7-01",
         end_date:"2026-7-15",
         is_active: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -31,6 +33,7 @@ module.exports = {
         start_date:"2026-09-01",
         end_date:"2026-09-30",
         is_active: false,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -41,6 +44,7 @@ module.exports = {
         start_date:"2027-7-01",
         end_date:"2027-7-15",
         is_active: false,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       }

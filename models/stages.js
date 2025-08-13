@@ -41,11 +41,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     is_required: {
       type: DataTypes.BOOLEAN
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null
     }
   }, {
     sequelize,
     modelName: 'Stage',
     tableName: 'stages',
+    paranoid: true,
+    deletedAt: 'deletedAt',
     timestamps: true
   });
   return Stages;

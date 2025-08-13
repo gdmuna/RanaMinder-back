@@ -83,45 +83,6 @@ exports.createNewCampaign = async (data) => {
     });
 }
 
-// 获取面试的申请表
-exports.getCampaignApplications = async (req) => {
-    const query = req.query || {};
-    const campaignId = req.params.id;
-    const currentPage = Math.abs(Number(query.currentPage)) || 1;
-    const pageSize = Math.abs(Number(query.pageSize)) || 10;
-    const offset = (currentPage - 1) * pageSize;
-
-    // 检查面试是否存在
-    const campaign = await Campaign.findByPk(campaignId);
-    if (!campaign) {
-        throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
-    }
-
-    const { count, rows } = await Application.findAndCountAll({
-        where: { campaign_id: campaignId },
-        order: [['createdAt', 'DESC']],
-        offset,
-        limit: pageSize,
-    });
-
-    const totalPages = Math.ceil(count / pageSize);
-    const applications = rows;
-
-    if (!applications || applications.length === 0) {
-        throw new AppError('没有查询到申请表', 404, 'NO_APPLICATION');
-    }
-
-    return {
-        pagination: {
-            currentPage,             // 当前页
-            pageSize,                // 每页记录数
-            totalRecords: count,     // 总记录数
-            totalPages,              // 总页数   
-        },
-        applications
-    };
-}
-
 // 更新面试信息
 exports.updateCampaign = async (campaignId, data) => {
     return await sequelize.transaction(async (t) => {
@@ -155,5 +116,19 @@ exports.updateCampaign = async (campaignId, data) => {
         // 更新面试信息
         const updatedCampaign = await campaign.update(data, { transaction: t });
         return updatedCampaign;
+    });
+}
+
+// 删除面试
+exports.deleteCampaign = async (campaignId) => {
+    return await sequelize.transaction(async (t) => {
+        // 检查面试是否存在
+        const campaign = await Campaign.findByPk(campaignId);
+        if (!campaign) {
+            throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
+        }
+        // 软删除面试
+        await campaign.destroy({campaignId},{ transaction: t });
+        return;
     });
 }

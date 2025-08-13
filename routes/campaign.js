@@ -8,5 +8,7 @@ router.get('/user', campaignController.getAllCampaigns);
 router.post('/create', campaignController.createNewCampaign);
 // 管理员更新面试信息
 router.put('/:id', campaignController.updateCampaign);
+// 管理员删除面试
+router.delete('/:id', campaignController.deleteCampaign);
 
 module.exports = router;

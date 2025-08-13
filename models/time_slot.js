@@ -45,11 +45,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     is_available: {
       type: DataTypes.BOOLEAN
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null
     }
   }, {
     sequelize,
     modelName: 'Time_slot',
     tableName: 'time_slots',
+    paranoid: true,
+    deletedAt: 'deletedAt',
     timestamps: true
   });
   return Time_slot;

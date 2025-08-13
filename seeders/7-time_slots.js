@@ -12,6 +12,7 @@ module.exports = {
         max_seats: 10,
         booked_seats: 2,
         is_available: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -23,6 +24,7 @@ module.exports = {
         max_seats: 10,
         booked_seats: 2,
         is_available: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -34,6 +36,7 @@ module.exports = {
         max_seats: 10,
         booked_seats: 2,
         is_available: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -45,6 +48,7 @@ module.exports = {
         max_seats: 10,
         booked_seats: 1,
         is_available: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -56,6 +60,7 @@ module.exports = {
         max_seats: 10,
         booked_seats: 0,
         is_available: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -67,6 +72,7 @@ module.exports = {
         max_seats: 10,
         booked_seats: 0,
         is_available: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       }

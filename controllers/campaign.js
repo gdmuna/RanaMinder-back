@@ -46,3 +46,17 @@ exports.updateCampaign = async (req, res, next) => {
         next(error);
     }
 };
+
+// 删除面试
+exports.deleteCampaign = async (req, res, next) => {
+    try {
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+            throw new AppError('您没有权限删除面试', 403, 'NO_PERMISSION');
+        }
+        const campaignId = req.params.id;
+        await campaignService.deleteCampaign(campaignId);
+        return res.success(null, '面试删除成功', 'CAMPAIGN_DELETED');
+    } catch (error) {
+        next(error);
+    }
+}

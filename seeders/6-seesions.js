@@ -11,6 +11,7 @@ module.exports = {
         start_time: new Date('2025-09-10T00:00:00Z'),
         end_time: new Date('2025-09-10T23:59:59Z'),
         location: '会议室A',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -21,6 +22,7 @@ module.exports = {
         start_time: new Date('2025-09-11T00:00:00Z'),
         end_time: new Date('2025-09-11T23:59:59Z'),
         location: '会议室B',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -31,6 +33,7 @@ module.exports = {
         start_time: new Date('2025-09-12T00:00:00Z'),
         end_time: new Date('2025-09-12T23:59:59Z'),
         location: '会议室C',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -41,6 +44,7 @@ module.exports = {
         start_time: new Date('2025-09-13T00:00:00Z'),
         end_time: new Date('2025-09-13T23:59:59Z'),
         location: '会议室D',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -51,6 +55,7 @@ module.exports = {
         start_time: new Date('2025-09-14T00:00:00Z'),
         end_time: new Date('2025-09-14T23:59:59Z'),
         location: '会议室E',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -61,6 +66,7 @@ module.exports = {
         start_time: new Date('2025-09-15T00:00:00Z'),
         end_time: new Date('2025-09-15T23:59:59Z'),
         location: '会议室F',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -71,6 +77,7 @@ module.exports = {
         start_time: new Date('2025-09-16T00:00:00Z'),
         end_time: new Date('2025-09-16T23:59:59Z'),
         location: '会议室G',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -81,6 +88,7 @@ module.exports = {
         start_time: new Date('2025-09-17T00:00:00Z'),
         end_time: new Date('2025-09-17T23:59:59Z'),
         location: '会议室H',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -91,6 +99,7 @@ module.exports = {
         start_time: new Date('2025-09-18T00:00:00Z'),
         end_time: new Date('2025-09-18T23:59:59Z'),
         location: '会议室I',
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date()
       }
