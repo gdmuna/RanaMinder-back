@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Stage, {
         foreignKey: 'stage_id',
         targetKey: 'id',
+        as: 'stage'
       });
     }
   }
@@ -55,7 +56,13 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'seesions',
     paranoid: true,
     deletedAt: 'deletedAt',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      {
+        unique: false,
+        fields: ['stage_id']
+      }
+    ]
   });
   return Seesion;
 };

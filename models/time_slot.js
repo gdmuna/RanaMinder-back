@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Seesion, {
         foreignKey: 'seesion_id',
         targetKey: 'id',
+        as: 'seesion'
       });
     }
   }
@@ -58,7 +59,13 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'time_slots',
     paranoid: true,
     deletedAt: 'deletedAt',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['seesion_id']
+      }
+    ]
   });
   return Time_slot;
 };

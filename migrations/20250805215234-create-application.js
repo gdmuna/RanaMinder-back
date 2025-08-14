@@ -42,6 +42,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addIndex('applications', ['user_id']);
+    await queryInterface.addIndex('applications', ['campaign_id']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('applications');

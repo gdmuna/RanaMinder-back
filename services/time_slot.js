@@ -110,3 +110,5 @@ exports.deleteTimeSlot = async (id) => {
     await timeSlot.destroy();
     return { message: '时间段已删除' };
 }
+
+

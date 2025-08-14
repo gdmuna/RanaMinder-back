@@ -37,6 +37,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    await queryInterface.addIndex('user_selections', ['user_id', 'time_slot_id']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('user_selections');

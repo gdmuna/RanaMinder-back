@@ -50,6 +50,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addIndex('time_slots', ['seesion_id']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('time_slots');

@@ -14,10 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User, {
         foreignKey: 'user_id',
         targetKey: 'id',
+        as: 'user'
       });
       this.belongsTo(models.Time_slot, {
         foreignKey: 'time_slot_id',
         targetKey: 'id',
+        as: 'time_slot'
       });
     }
   }
@@ -41,7 +43,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User_selection',
     tableName: 'user_selections',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['user_id', 'time_slot_id']
+      }
+    ]
   });
   return User_selection;
 };

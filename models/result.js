@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Application, {
         foreignKey: 'application_id',
         targetKey: 'id',
+        as: 'application'
       });
       this.belongsTo(models.Campaign, {
         foreignKey: 'campaign_id',
         targetKey: 'id',
+        as: 'campaign'
       });
     }
   }
@@ -55,7 +57,17 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Result',
     tableName: 'results',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      {
+        name: 'idx_results_application_id',
+        fields: ['application_id']
+      },
+      {
+        name: 'idx_results_campaign_id',
+        fields: ['campaign_id']
+      }
+    ]
   });
   return Result;
 };

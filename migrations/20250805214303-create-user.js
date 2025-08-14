@@ -37,6 +37,9 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addIndex('users', ['stu_id'], {
+      unique: true
+    });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('users');

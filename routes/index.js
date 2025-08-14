@@ -6,6 +6,7 @@ const campaignRouter = require('./campaign');
 const stageRouter = require('./stage');
 const seesionRouter = require('./seesion');
 const time_slotRouter = require('./time_slot');
+const user_selectionRouter = require('./user_selection');
 const authRouter = require('./auth');
 
 
@@ -15,5 +16,6 @@ router.use('/campaign', campaignRouter);
 router.use('/stage', stageRouter);
 router.use('/seesion', seesionRouter);
 router.use('/time_slot', time_slotRouter);
+router.use('/user_selection', user_selectionRouter);
 
 module.exports = router;

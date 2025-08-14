@@ -62,7 +62,13 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'campaigns',
     paranoid: true, 
     deletedAt: 'deletedAt',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['id']
+      }
+    ]
   });
   return Campaign;
 };

@@ -47,6 +47,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addIndex('seesions', ['stage_id']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('seesions');
