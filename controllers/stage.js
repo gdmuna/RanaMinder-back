@@ -1,5 +1,5 @@
 const satgeService = require('../services/stage');
-const express = require('express');
+const AppError = require('../utils/AppError'); // 添加这一行
 
 // 获取所有阶段
 exports.getAllStages = async (req, res, next) => {

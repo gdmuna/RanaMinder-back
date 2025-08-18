@@ -1,4 +1,5 @@
 const campaignService = require('../services/campaign');
+const AppError = require('../utils/AppError'); // 添加这一行
 
 /**
  * @description 面试控制器

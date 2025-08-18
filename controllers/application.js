@@ -1,4 +1,5 @@
 const applicationService = require('../services/application');
+const AppError = require('../utils/AppError'); // 添加这一行
 
 /** 
  * @description 申请表控制器
