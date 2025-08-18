@@ -1,7 +1,8 @@
 const { User, User_selection, Time_slot, Seesion, Stage, Campaign,sequelize } = require('../models');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const { formatUserSelections } = require('../utils/format');
 const AppError = require('../utils/AppError');
+const { raw } = require('express');
 
 /**
  * @description 用户选择服务
@@ -64,6 +65,61 @@ exports.getUserSelections = async (req) => {
         order: [['createdAt', 'DESC']],
     });
     
+    const result = formatUserSelections(selections);
+
+    return result;
+}
+
+// 获取当前用户的选择
+exports.getCurrentUserSelection = async (req) => {
+    // 先查用户
+
+    const user = await User.findOne({
+        where: { stu_id: req.user.name },
+        attributes: ['id'],
+        raw: true
+    });
+
+    if (!user) {
+        throw new AppError('用户不存在', 404, 'USER_NOT_FOUND');
+    }
+    console.log(user.id);
+    // 再查选择
+    const selections = await User_selection.findAll({
+        where: { user_id:user.id },
+        include: [
+            {
+                model: Time_slot,
+                as: 'time_slot',
+                required: true,
+                include: [
+                    {
+                        model: Seesion,
+                        as: 'seesion',
+                        required: true,
+                        include: [
+                            {
+                                model: Stage,
+                                as: 'stage',
+                                required: true,
+                                include: [
+                                    {
+                                        model: Campaign,
+                                        as: 'campaign',
+                                        required: true,
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        order: [['createdAt', 'DESC']],
+    });
+    if (!selections || selections.length === 0) {
+        throw new AppError('没有查询到相关选择', 404, 'SELECTION_NOT_FOUND');
+    }
     const result = formatUserSelections(selections);
 
     return result;

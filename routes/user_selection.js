@@ -4,5 +4,7 @@ const router = express.Router();
 
 // 获取用户选择
 router.get('/', user_selectionController.getUserSelections);
+// 获取当前用户的选择
+router.get('/me', user_selectionController.getCurrentUserSelection);
 
 module.exports = router;

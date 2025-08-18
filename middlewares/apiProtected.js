@@ -4,7 +4,7 @@ const casdoor = require('../config/casdoorConfigs');
 const whiteList = [
   { method: 'GET', path: /^\/api\/auth/ },
   { method: 'POST', path: /^\/api\/auth/ },
-  { method: 'GET',path: /^\/api\/user_selection/ },
+
 ];
 
 // 白名单函数

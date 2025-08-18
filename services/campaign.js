@@ -19,23 +19,12 @@ exports.getAllCampaigns = async (req) => {
     const pageSize = Math.abs(Number(query.pageSize)) || 10;
     const offset = (currentPage - 1) * pageSize;
 
-    let condition = {
-        where: {
-            is_active: true
-        },
-        order: [['createdAt', 'DESC']],
-        offset,
-        limit: pageSize,
-    };
-
-    if(req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        // 管理员查看所有面试
-         condition = {
+    let  condition = {
             order: [['createdAt', 'DESC']],
             offset,
             limit: pageSize,
         };
-    }
+
 
     const { count, rows } = await Campaign.findAndCountAll(condition);
     const totalPages = Math.ceil(count / pageSize);
