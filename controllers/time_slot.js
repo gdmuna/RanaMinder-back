@@ -1,5 +1,5 @@
 const time_slotService = require('../services/time_slot.js');
-const express = require('express');
+const AppError = require('../utils/AppError'); // 添加这一行
 
 // 获取seesion时间段
 exports.getTimeSlotsBySeesionId = async (req, res,next) => {

@@ -1,4 +1,5 @@
 const applicationService = require('../services/application');
+const AppError = require('../utils/AppError'); // 添加这一行
 
 /** 
  * @description 申请表控制器
@@ -9,7 +10,6 @@ const applicationService = require('../services/application');
 exports.getAllApplications = async (req, res, next) => {
   try {
     // 管理员获取面试的申请表
-    router.get('/applications/:id', campaignController.getCampaignApplications);
     const result = await applicationService.getAllApplications(req);
     if (!result.applications || result.applications.length === 0) {
       return res.success(result, '没有查询到相关文章', 'NO_ARTICLE');
