@@ -6,5 +6,10 @@ const router = express.Router();
 router.get('/', user_selectionController.getUserSelections);
 // 获取当前用户的选择
 router.get('/me', user_selectionController.getCurrentUserSelection);
+// 新建用户选择
+router.post('/', user_selectionController.createUserSelection);
+// 删除用户选择
+router.delete('/:id', user_selectionController.deleteUserSelection);
+
 
 module.exports = router;

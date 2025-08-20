@@ -1,8 +1,8 @@
 const { User, User_selection, Time_slot, Seesion, Stage, Campaign,sequelize } = require('../models');
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 const { formatUserSelections } = require('../utils/format');
 const AppError = require('../utils/AppError');
-const { raw } = require('express');
+
 
 /**
  * @description 用户选择服务
@@ -123,4 +123,73 @@ exports.getCurrentUserSelection = async (req) => {
     const result = formatUserSelections(selections);
 
     return result;
+}
+
+//新增用户选择
+exports.createUserSelection = async (data) => {
+    const { user_id, time_slot_id } = data;
+
+    // 检查必填字段
+    if (!user_id || !time_slot_id) {
+        throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
+    }
+
+    // 检查用户是否存在
+    const user = await User.findByPk(user_id);
+    if (!user) {
+        throw new AppError('用户不存在', 404, 'USER_NOT_FOUND');
+    }
+
+    // 检查时间段是否存在
+    const timeSlot = await Time_slot.findByPk(time_slot_id);
+    if (!timeSlot) {
+        throw new AppError('时间段不存在', 404, 'TIME_SLOT_NOT_FOUND');
+    }
+
+    // 检查用户是否已经选择了该时间段
+    const existingSelection = await User_selection.findOne({
+        where: {
+            user_id,
+            time_slot_id,
+        },
+    });
+
+    if (existingSelection) {
+        throw new AppError('用户已经选择了该时间段', 409, 'SELECTION_ALREADY_EXISTS');
+    }
+
+    // 检查时间段是否已满
+    if (timeSlot.current_seats >= timeSlot.max_seats) {
+        throw new AppError('时间段已满，请选择其他时间段', 409, 'TIME_SLOT_FULL');
+    }
+
+    // 创建新的用户选择
+    const newSelection = await User_selection.create({
+        user_id,
+        time_slot_id,
+    });
+    
+    await Time_slot.increment('booked_seats', {
+        by: 1,
+        where: { id: time_slot_id }
+    });
+
+    return newSelection;
+}
+
+// 删除用户选择
+exports.deleteUserSelection = async (selectionId) => {
+    const selection = await User_selection.findByPk(selectionId);
+    if (!selection) {
+        throw new AppError('用户选择不存在', 404, 'SELECTION_NOT_FOUND');
+    }
+
+    await User_selection.destroy({
+        where: { id: selectionId }
+    });
+    await Time_slot.decrement('booked_seats', {
+        by: 1,
+        where: { id: selection.time_slot_id }
+    });
+    return { message: '用户选择已删除' };
 }

@@ -30,3 +30,29 @@ exports.getCurrentUserSelection = async (req, res, next) => {
         next(error);
     }
 }
+
+// 新建用户选择
+exports.createUserSelection = async (req, res, next) => {
+    try {
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+            throw new AppError('您没有权限创建seesion', 403, 'NO_PERMISSION');
+        }
+        const result = await user_selectionService.createUserSelection(req.body);
+        return res.success(result, '创建成功', 'CREATION_SUCCESS');
+    } catch (error) {
+        next(error);
+    }
+}
+
+//删除用户选择
+exports.deleteUserSelection = async (req, res, next) => {
+    try {
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+            throw new AppError('您没有权限删除选择', 403, 'NO_PERMISSION');
+        }
+        const result = await user_selectionService.deleteUserSelection(req.params.id);
+        return res.success(result, '删除成功', 'DELETION_SUCCESS');
+    } catch (error) {
+        next(error);
+    }
+}
