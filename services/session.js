@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError');
 
 /**
  * @description 面试服务
- * @module services/seesion
+ * @module services/session
  * @requires models/Seesion
  * @requires models/Stage
  * @requires utils/AppError
@@ -106,14 +106,14 @@ exports.updateSeesion = async (id, data) => {
         throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
     // 检查面试节点是否存在
-    const seesion = await Seesion.findByPk(id);
-    if (!seesion) {
+    const session = await Seesion.findByPk(id);
+    if (!session) {
         throw new AppError('面试节点不存在', 404, 'SEESION_NOT_FOUND');
     }
 
     // 检查阶段是否存在（如果有变更）
-    let targetStageId = seesion.stage_id;
-    if (data.stage_id && data.stage_id !== seesion.stage_id) {
+    let targetStageId = session.stage_id;
+    if (data.stage_id && data.stage_id !== session.stage_id) {
         const stage = await Stage.findByPk(data.stage_id);
         if (!stage) {
             throw new AppError('指定的阶段不存在', 404, 'STAGE_NOT_FOUND');
@@ -122,8 +122,8 @@ exports.updateSeesion = async (id, data) => {
     }
 
     // 检查时间是否合理
-    const newStart = data.start_time ? new Date(data.start_time) : seesion.start_time;
-    const newEnd = data.end_time ? new Date(data.end_time) : seesion.end_time;
+    const newStart = data.start_time ? new Date(data.start_time) : session.start_time;
+    const newEnd = data.end_time ? new Date(data.end_time) : session.end_time;
 
     if (newStart >= newEnd) {
         throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
@@ -165,7 +165,7 @@ exports.updateSeesion = async (id, data) => {
     }
 
     // 更新面试节点
-    const updatedSeesion = await seesion.update(data);
+    const updatedSeesion = await session.update(data);
     return updatedSeesion;
 }
 
@@ -176,10 +176,10 @@ exports.updateSeesion = async (id, data) => {
  */
 exports.deleteSeesion = async (id) => {
     // 检查面试节点是否存在
-    const seesion = await Seesion.findByPk(id);
-    if (!seesion) {
+    const session = await Seesion.findByPk(id);
+    if (!session) {
         throw new AppError('面试节点不存在', 404, 'SEESION_NOT_FOUND');
     }
     // 软删除面试节点
-    await seesion.destroy();
+    await session.destroy();
 }

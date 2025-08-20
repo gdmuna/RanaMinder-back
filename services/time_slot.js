@@ -14,8 +14,8 @@ const AppError = require('../utils/AppError');
 exports.getTimeSlotsBySeesionId = async (seesion_id) => {
 
     // 检查面试是否存在
-    const seesion = await Seesion.findByPk(seesion_id);
-    if (!seesion) {
+    const session = await Seesion.findByPk(seesion_id);
+    if (!session) {
         throw new AppError('面试不存在', 404, 'SEESION_NOT_FOUND');
     }
     const time_slots = await Time_slot.findAll({
@@ -39,8 +39,8 @@ exports.createNewTimeSlot = async (data) => {
         throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
     // 检查面试节点是否存在
-    const seesion = await Seesion.findByPk(seesion_id);
-    if (!seesion) {
+    const session = await Seesion.findByPk(seesion_id);
+    if (!session) {
         throw new AppError('指定的seesion不存在', 404, 'SEESION_NOT_FOUND');
     }
 
@@ -53,7 +53,7 @@ exports.createNewTimeSlot = async (data) => {
     }
 
     // 检查时间段是否在seesion时间范围内
-    if (start < seesion.start_time || end > seesion.end_time) {
+    if (start < session.start_time || end > session.end_time) {
         throw new AppError('时间段必须在对应seesion的时间范围内', 400, 'TIME_SLOT_OUT_OF_SEESION');
     }
 

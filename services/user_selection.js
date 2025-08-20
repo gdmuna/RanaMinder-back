@@ -42,7 +42,7 @@ exports.getUserSelections = async (req) => {
                 include: [
                     {
                         model: Seesion,
-                        as: 'seesion',
+                        as: 'session',
                         required: true,
                         include: [
                             {
@@ -95,7 +95,7 @@ exports.getCurrentUserSelection = async (req) => {
                 include: [
                     {
                         model: Seesion,
-                        as: 'seesion',
+                        as: 'session',
                         required: true,
                         include: [
                             {

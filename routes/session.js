@@ -1,4 +1,4 @@
-const seesionController = require('../controllers/seesion.js');
+const seesionController = require('../controllers/session.js');
 const express = require('express');
 const router = express.Router();
 

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Seesion, {
         foreignKey: 'seesion_id',
         targetKey: 'id',
-        as: 'seesion'
+        as: 'session'
       });
     }
   }

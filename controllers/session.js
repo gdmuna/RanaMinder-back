@@ -1,4 +1,4 @@
-const seesionService = require('../services/seesion');
+const seesionService = require('../services/session');
 const AppError = require('../utils/AppError'); // 添加这一行
 
 //查询面试节点
