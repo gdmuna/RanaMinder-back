@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'id',
         as: 'campaign'
       });
+      this.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        targetKey: 'id',
+        as: 'user'
+      });
     }
   }
   Result.init({
@@ -34,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     campaign_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
