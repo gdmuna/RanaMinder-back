@@ -85,6 +85,7 @@ exports.creatNewApplication = async (data, stu_id) => {
         }
 
         await newApplication.createResult({
+            user_id: user_id,
             application_id: newApplication.id,
             campaign_id: newApplication.campaign_id,
             status: 'pending',
