@@ -8,7 +8,10 @@
     "reset-seed": "cross-env NODE_ENV=development sequelize db:seed:undo:all && cross-env NODE_ENV=development sequelize db:seed:all"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.872.0",
+    "@aws-sdk/s3-request-presigner": "^3.872.0",
     "alova": "^3.3.4",
+    "aws-sdk": "^2.1692.0",
     "casdoor-nodejs-sdk": "^1.28.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
@@ -18,9 +21,11 @@
     "express": "^4.21.2",
     "mariadb": "^3.4.5",
     "morgan": "^1.10.1",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
-    "redis": "^5.6.1"
+    "redis": "^5.6.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "sequelize": "^6.37.7",

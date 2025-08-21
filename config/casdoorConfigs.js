@@ -1,17 +1,17 @@
 const { SDK } = require('casdoor-nodejs-sdk');
 const fs = require('fs');
 require('dotenv').config();
-
+const { CASDOOR_ENDPOINT, CASDOOR_CLIENT_ID, CASDOOR_CLIENTSECRET, CASDOOR_ORGNAME, CASDOOR_APPNAME } = process.env;
 //读取casdoor证书
 const certificate = fs.readFileSync('casdoorCertificate/cert.pem', 'utf8');
 
 const casdoorConfig={
-  endpoint: process.env.CASDOOR_ENDPOINT,
-  clientId: process.env.CASDOOR_CLIENT_ID,
-  clientSecret: process.env.CASDOOR_CLIENTSECRET,
+  endpoint: CASDOOR_ENDPOINT,
+  clientId: CASDOOR_CLIENT_ID,
+  clientSecret: CASDOOR_CLIENTSECRET,
   certificate: certificate,
-  organizationName: process.env.CASDOOR_ORGNAME,
-  applicationName: process.env.CASDOOR_APPNAME,
+  organizationName: CASDOOR_ORGNAME,
+  applicationName: CASDOOR_APPNAME,
 
 };
 
