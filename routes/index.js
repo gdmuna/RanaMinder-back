@@ -9,6 +9,7 @@ const time_slotRouter = require('./time_slot');
 const user_selectionRouter = require('./user_selection');
 const resultRouter = require('./result');
 const uploadRouter = require('./upload');
+const mailRouter = require('./mail'); 
 const authRouter = require('./auth');
 
 
@@ -21,5 +22,6 @@ router.use('/time_slot', time_slotRouter);
 router.use('/user_selection', user_selectionRouter);
 router.use('/result', resultRouter);
 router.use('/upload', uploadRouter);
+router.use('/mail', mailRouter);
 
 module.exports = router;

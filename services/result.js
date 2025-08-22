@@ -67,29 +67,36 @@ exports.getCurrentUserResults = async (req) => {
 
 // 修改结果
 exports.updateResult = async (resultId, data) => {
-    const { status } = data;
+    const { status, association, department, role } = data;
+    console .log(data);
     // 检查必填字段
     if (!status) {
         throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
 
     // 检查状态是否有效
-    const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+    const validStatuses = ['pending', 'approved', 'rejected'];
     if (!validStatuses.includes(status)) {
         throw new AppError('无效的状态', 400, 'INVALID_STATUS');
     }
 
+    // 要更新的字段
+    const updateFields = { status };
+    if (association !== undefined) updateFields.association = association;
+    if (department !== undefined) updateFields.department = department;
+    if (role !== undefined) updateFields.role = role;
+
     // 支持批量
     if (Array.isArray(resultId)) {
         // 检查所有 id 是否存在
-        const results = await Result.findAll({ where: { resultId } });
+        const results = await Result.findAll({ where: { id: resultId } });
         if (!results || results.length === 0) {
             throw new AppError('结果不存在', 404, 'RESULT_NOT_FOUND');
         }
         // 批量更新
-        await Result.update({ status }, { where: { resultId } });
+        await Result.update(updateFields, { where: { id: resultId } });
         // 返回更新后的所有结果
-        const updatedResults = await Result.findAll({ where: { resultId } });
+        const updatedResults = await Result.findAll({ where: { id: resultId } });
         return updatedResults;
     } else {
         // 单个
@@ -97,7 +104,7 @@ exports.updateResult = async (resultId, data) => {
         if (!result) {
             throw new AppError('结果不存在', 404, 'RESULT_NOT_FOUND');
         }
-        const updatedResult = await result.update({ status });
+        const updatedResult = await result.update(updateFields);
         return updatedResult;
     }
 }

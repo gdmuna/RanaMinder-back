@@ -42,7 +42,7 @@ exports.updateResult = async (req, res, next) => {
         if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
             throw new AppError('您没有权限修改结果', 403, 'NO_PERMISSION');
         }
-        const resultId = req.body.id;
+        const resultId = req.body.result_id;
         const data = req.body;
         const updatedResult = await ResultService.updateResult(resultId, data);
         return res.success(updatedResult, '结果更新成功', 'RESULT_UPDATED');

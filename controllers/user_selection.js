@@ -6,7 +6,7 @@ const AppError = require('../utils/AppError');
 exports.getUserSelections = async (req, res, next) => {
     try {
         if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-            throw new AppError('您没有权限创建seesion', 403, 'NO_PERMISSION');
+            throw new AppError('您没有权限获取', 403, 'NO_PERMISSION');
         }
         const result = await user_selectionService.getUserSelections(req);
         if (!result || result.length === 0) {
