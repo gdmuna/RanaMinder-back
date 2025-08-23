@@ -42,3 +42,18 @@ exports.deleteTimeSlot = async (req, res, next) => {
         next(error);
     }
 };
+
+// 更新时间段
+exports.updateTimeSlot = async (req, res, next) => {
+    try {
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+            throw new AppError('您没有权限更新时间段', 403, 'NO_PERMISSION');
+        }
+        const timeSlotId = req.body.time_slot_id;
+        const data = req.body;
+        const updatedTimeSlot = await time_slotService.updateTimeSlot(timeSlotId, data);
+        return res.success(updatedTimeSlot, '时间段更新成功', 'TIME_SLOT_UPDATED');
+    } catch (error) {
+        next(error);
+    }
+}

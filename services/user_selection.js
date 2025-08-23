@@ -127,17 +127,12 @@ exports.getCurrentUserSelection = async (req) => {
 
 //新增用户选择
 exports.createUserSelection = async (data) => {
-    const { user_id, time_slot_id } = data;
+    let { user_id, time_slot_id } = data;
 
-    // 检查必填字段
-    if (!user_id || !time_slot_id) {
+    // 支持批量 user_id
+    const userIds = Array.isArray(user_id) ? user_id : [user_id];
+    if (!userIds.length || !time_slot_id) {
         throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
-    }
-
-    // 检查用户是否存在
-    const user = await User.findByPk(user_id);
-    if (!user) {
-        throw new AppError('用户不存在', 404, 'USER_NOT_FOUND');
     }
 
     // 检查时间段是否存在
@@ -146,35 +141,79 @@ exports.createUserSelection = async (data) => {
         throw new AppError('时间段不存在', 404, 'TIME_SLOT_NOT_FOUND');
     }
 
-    // 检查用户是否已经选择了该时间段
-    const existingSelection = await User_selection.findOne({
-        where: {
-            user_id,
-            time_slot_id,
-        },
-    });
-
-    if (existingSelection) {
-        throw new AppError('用户已经选择了该时间段', 409, 'SELECTION_ALREADY_EXISTS');
-    }
-
     // 检查时间段是否已满
-    if (timeSlot.current_seats >= timeSlot.max_seats) {
+    if (timeSlot.current_seats + userIds.length > timeSlot.max_seats) {
         throw new AppError('时间段已满，请选择其他时间段', 409, 'TIME_SLOT_FULL');
     }
 
-    // 创建新的用户选择
-    const newSelection = await User_selection.create({
-        user_id,
-        time_slot_id,
-    });
-    
+    const results = [];
+    for (const uid of userIds) {
+        // 检查用户是否存在
+        const user = await User.findByPk(uid);
+        if (!user) {
+            results.push({ user_id: uid, success: false, error: '用户不存在' });
+            continue;
+        }
+
+        // 查询当前 time_slot 的 stage_id
+        const currentTimeSlot = await Time_slot.findByPk(time_slot_id, {
+            include: [{
+                model: Seesion,
+                as: 'session',
+                include: [{
+                    model: Stage,
+                    as: 'stage'
+                }]
+            }]
+        });
+        const stageId = currentTimeSlot?.session?.stage_id;
+        if (!stageId) {
+            results.push({ user_id: uid, success: false, error: '未找到对应的面试阶段' });
+            continue;
+        }
+
+        // 检查该用户在本 stage 下是否已有分配
+        const hasAssigned = await User_selection.findOne({
+            include: [{
+                model: Time_slot,
+                as: 'time_slot',
+                include: [{
+                    model: Seesion,
+                    as: 'session',
+                    where: { stage_id: stageId }
+                }]
+            }],
+            where: { user_id: uid }
+        });
+        if (hasAssigned) {
+            results.push({ user_id: uid, success: false, error: '该用户在本面试阶段已分配时间段，不能重复分配' });
+            continue;
+        }
+
+        // 检查用户是否已经选择了该时间段
+        const existingSelection = await User_selection.findOne({
+            where: { user_id: uid, time_slot_id },
+        });
+        if (existingSelection) {
+            results.push({ user_id: uid, success: false, error: '用户已经选择了该时间段' });
+            continue;
+        }
+
+        // 创建新的用户选择
+        const newSelection = await User_selection.create({
+            user_id: uid,
+            time_slot_id,
+        });
+        results.push({ user_id: uid, success: true, selection: newSelection });
+    }
+
+    // 批量递增booked_seats
     await Time_slot.increment('booked_seats', {
-        by: 1,
+        by: results.filter(r => r.success).length,
         where: { id: time_slot_id }
     });
 
-    return newSelection;
+    return results;
 }
 
 // 删除用户选择

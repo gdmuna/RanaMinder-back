@@ -111,4 +111,77 @@ exports.deleteTimeSlot = async (id) => {
     return { message: '时间段已删除' };
 }
 
+// 更新时间段
+exports.updateTimeSlot = async (id, data) => {
+    const timeSlot = await Time_slot.findByPk(id);
+    if (!timeSlot) {
+        throw new AppError('时间段不存在', 404, 'TIME_SLOT_NOT_FOUND');
+    }
+
+    const { start_time, end_time, max_seats } = data;
+
+    // 如果有更新开始或结束时间，进行验证
+    if (start_time || end_time) {
+        const start = start_time ? new Date(start_time) : timeSlot.start_time;
+        const end = end_time ? new Date(end_time) : timeSlot.end_time;
+
+        // 检查时间顺序
+        if (start >= end) {
+            throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+        }
+
+        // 检查时间段是否在seesion时间范围内
+        const session = await Seesion.findByPk(timeSlot.seesion_id);
+        if (start < session.start_time || end > session.end_time) {
+            throw new AppError('时间段必须在对应seesion的时间范围内', 400, 'TIME_SLOT_OUT_OF_SEESION');
+        }
+
+        // 检查时间段是否与已有时间段冲突
+        const existingTimeSlot = await Time_slot.findOne({
+            where: {
+                seesion_id: timeSlot.seesion_id,
+                id: { [Op.ne]: id }, // 排除当前时间段
+                [Op.or]: [
+                    {
+                        start_time: {
+                            [Op.lt]: end,
+                            [Op.gte]: start
+                        }
+                    },
+                    {
+                        end_time: {
+                            [Op.lte]: end,
+                            [Op.gt]: start
+                        }
+                    },
+                    {
+                        start_time: {
+                            [Op.lte]: start
+                        },
+                        end_time: {
+                            [Op.gte]: end
+                        }
+                    }
+                ]
+            }
+        });
+        if (existingTimeSlot) {
+            throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
+        }
+
+        timeSlot.start_time = start;
+        timeSlot.end_time = end;
+    }
+
+    // 如果有更新最大座位数，进行验证
+    if (max_seats !== undefined) {
+        if (max_seats < timeSlot.booked_seats) {
+            throw new AppError('最大座位数不能小于已预订座位数', 400, 'INVALID_MAX_SEATS');
+        }
+        timeSlot.max_seats = max_seats;
+        timeSlot.is_available = (timeSlot.booked_seats < max_seats);
+    }
+    await timeSlot.save();
+    return timeSlot;
+}
 
