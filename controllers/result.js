@@ -12,12 +12,12 @@ exports.getAllResults = async (req, res, next) => {
          if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
             throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
         }
-        const result = await ResultService.getAllResults(req);
-        if (!result || result.results.length === 0) {
-            return res.success(result,'没有查询到相关结果', 'RESULT_NOT_FOUND');
+        const {results,pagination} = await ResultService.getAllResults(req);
+        if (!results || results.length === 0) {
+            return res.success(results,'没有查询到相关结果', 'RESULT_NOT_FOUND');
         }
-        console.log(11111)
-        return res.success(result,'查询成功', 'SUCCESS');
+        
+        return res.success({results,pagination},'查询成功', 'SUCCESS');
     } catch (error) {
         next(error);
     }

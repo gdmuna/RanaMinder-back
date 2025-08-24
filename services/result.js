@@ -26,10 +26,6 @@ exports.getAllResults = async (req) => {
     
     const { count, rows } = await Result.findAndCountAll(condition);
     const totalPages = Math.ceil(count / pageSize);
-    const results = rows;
-    if (!results || results.length === 0) {
-        throw new AppError('没有查询到结果', 404, 'NO_RESULT');
-    }
     return {
         pagination: {
             currentPage,             // 当前页 
@@ -37,32 +33,33 @@ exports.getAllResults = async (req) => {
             totalRecords: count,     // 总记录数
             totalPages,              // 总页数
         },
-        results
+        results: rows  // 注意这里的键名是 results 而不是 rows
     };
 }
 
 //获取当前用户的结果
 exports.getCurrentUserResults = async (req) => {
     const user = await User.findOne({
-            where: { stu_id: req.user.name },
-            attributes: ['id'],
-            raw: true
-        });
+        where: { stu_id: req.user.name },
+        attributes: ['id'],
+        raw: true
+    });
 
     if (!user) {
         throw new AppError('用户不存在', 404, 'USER_NOT_FOUND');
     }
-    console.log(user.id);
+
     const results = await Result.findAll({
         where: { user_id: user.id },
         order: [['createdAt', 'DESC']],
     });
+
     if (!results || results.length === 0) {
         throw new AppError('没有查询到结果', 404, 'NO_RESULT');
     }
-    return {
-        results
-    };
+
+    // 直接返回结果数组
+    return results;
 }
 
 // 修改结果
