@@ -98,7 +98,7 @@ exports.createNewTimeSlot = async (data) => {
         booked_seats: 0,
         is_available: true
     });
-    return newTimeSlot;
+    return {time_slots: newTimeSlot};
 }
 
 //删除时间段
@@ -182,6 +182,6 @@ exports.updateTimeSlot = async (id, data) => {
         timeSlot.is_available = (timeSlot.booked_seats < max_seats);
     }
     await timeSlot.save();
-    return timeSlot;
+    return {time_slots: timeSlot};
 }
 

@@ -66,7 +66,7 @@ exports.uploadFile = async (file, type) => {
 };
 
 // 封面上传接口
-exports.uploadCover = async (file, type) => {
+exports.uploadPicture = async (file, type) => {
     if (!file) {
         throw new AppError('未检测到上传文件', 400, 'NO_FILE');
     }
@@ -93,6 +93,9 @@ exports.uploadCover = async (file, type) => {
         case 'announcement':
             keyPrefix = 'announcement/cover/';
             break;
+        case 'photo':
+            keyPrefix = 'photo/';
+            break;
         default:
             throw new AppError('不支持的封面类型', 400, 'INVALID_COVER_TYPE');
     }
@@ -101,7 +104,7 @@ exports.uploadCover = async (file, type) => {
         throw new AppError('封面文件类型不被允许', 400, 'INVALID_FILE_TYPE');
     }
     if (size > maxSize) {
-        throw new AppError(`封面文件大小不能超过${maxSize / 1024 / 1024}MB`, 400, 'FILE_TOO_LARGE');
+        throw new AppError(`封面文件大小不能超过${maxSize}MB`, 400, 'FILE_TOO_LARGE');
     }
 
     const key = `${keyPrefix}${Date.now()}_${newFileName}`;

@@ -91,7 +91,7 @@ exports.createNewSeesion = async (data) => {
         end_time,
         location
     });
-    return newSeesion;
+    return {sessions:mnewSeesion};
 }
 
 /**
@@ -166,7 +166,7 @@ exports.updateSeesion = async (id, data) => {
 
     // 更新面试节点
     const updatedSeesion = await session.update(data);
-    return updatedSeesion;
+    return {sessions: updatedSeesion};
 }
 
 /**

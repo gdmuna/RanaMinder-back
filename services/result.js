@@ -58,8 +58,7 @@ exports.getCurrentUserResults = async (req) => {
         throw new AppError('没有查询到结果', 404, 'NO_RESULT');
     }
 
-    // 直接返回结果数组
-    return results;
+    return { result: results };
 }
 
 // 修改结果
@@ -102,6 +101,6 @@ exports.updateResult = async (resultId, data) => {
             throw new AppError('结果不存在', 404, 'RESULT_NOT_FOUND');
         }
         const updatedResult = await result.update(updateFields);
-        return updatedResult;
+        return {results:updatedResult};
     }
 }

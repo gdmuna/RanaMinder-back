@@ -1,4 +1,6 @@
+const upload = require('../middlewares/multer');
 const { Application, User, Campaign, Result, sequelize } = require('../models');
+const {uploadPicture} = require('../services/upload');
 const AppError = require('../utils/AppError');
 
 /**
@@ -43,7 +45,18 @@ exports.getAllApplications = async (req) => {
     };
 }
 
-exports.creatNewApplication = async (data, stu_id) => {
+exports.creatNewApplication = async (data, stu_id, file) => {
+    // 保证 information 是对象
+    if (typeof data.information === 'string') {
+           try{
+            data.information = JSON.parse(data.information);
+           }catch(err){
+            throw new AppError('information 字段格式错误，必须是有效的 JSON 字符串', 400, 'INVALID_INFORMATION_FORMAT');
+           }
+    }
+    if (!data.information) {
+        data.information = {};
+    }
 
     const user_id = await User.findOne({
         where: { stu_id: stu_id },
@@ -58,13 +71,19 @@ exports.creatNewApplication = async (data, stu_id) => {
     if (!campaign) {
         throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
     }
-    // 检查面试是否在报名时间内
-   if(campaign.is_active === false) {
+    if (campaign.is_active === false) {
         throw new AppError('该面试尚未开始报名', 403, 'CAMPAIGN_NOT_STARTED');
     }
 
     data.user_id = user_id;
     data.stu_id = stu_id;
+
+    // 上传照片
+    if (file) {
+        const type = 'photo';
+        const photoUrl = await uploadPicture(file, type);
+        data.information.photo = photoUrl.url;
+    }
 
     return await sequelize.transaction(async (t) => {
         const existingApplication = await Application.findOne({
@@ -93,7 +112,7 @@ exports.creatNewApplication = async (data, stu_id) => {
             updatedAt: new Date()
         }, { transaction: t });
 
-        return newApplication;
+        return { applications: newApplication };
     });
 }
 
@@ -129,4 +148,52 @@ exports.getCampaignApplications = async (req, campaignId) => {
         },
         applications
     };
+}
+
+//获取当前用户的申请表
+exports.getCurrentUserApplications = async (stuId) => {
+    const user = await User.findOne({
+        where: { stu_id: stuId },
+        attributes: ['id'],
+        raw: true
+    });
+    if (!user) {
+        throw new AppError('用户不存在', 404, 'USER_NOT_FOUND');
+    }
+    const applications = await Application.findAll({
+        where: { user_id: user.id },
+        order: [['createdAt', 'DESC']],
+    });
+    return { applications };
+}
+
+//删除申请表
+exports.deleteApplication = async (applicationId, stuId) => {
+
+    const userId = await User.findOne({
+        where: { stu_id: stuId },
+        attributes: ['id'],
+    }).then(user => user ? user.id : null);
+
+    return await sequelize.transaction(async (t) => {
+        // 查询申请表并校验归属
+        const application = await Application.findByPk(applicationId, { transaction: t });
+        if (!application) {
+            throw new AppError('申请表不存在', 404, 'APPLICATION_NOT_FOUND');
+        }
+        if (application.user_id !== userId) {
+            throw new AppError('无权限删除该申请表', 403, 'NO_PERMISSION');
+        }
+
+        // 删除对应的结果表
+        await Result.destroy({
+            where: { application_id: applicationId },
+            transaction: t
+        });
+
+        // 删除申请表
+        await application.destroy({ transaction: t });
+
+        return { message: '申请表删除成功' };
+    });
 }

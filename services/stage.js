@@ -68,7 +68,7 @@ exports.createNewStage = async (data) => {
         is_required: data.is_required || true,
     });
 
-    return newStage;
+    return {stages: newStage};
 }
 
 /**
@@ -89,7 +89,7 @@ exports.updateStage = async (id, data) => {
         throw new AppError('参数缺失，必须要填写更新参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
     const updatedStage = await stage.update(data);
-    return updatedStage;
+    return {stages: updatedStage};
 }
 
 /**

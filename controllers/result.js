@@ -26,11 +26,11 @@ exports.getAllResults = async (req, res, next) => {
 // 获取当前用户的结果
 exports.getCurrentUserResults = async (req, res, next) => {
     try {
-        const result = await ResultService.getCurrentUserResults(req);
-        if (!result || result.length === 0) {
-            return res.success(result,'没有查询到相关结果', 'RESULT_NOT_FOUND');
+        const results = await ResultService.getCurrentUserResults(req);
+        if (!results || results.length === 0) {
+            return res.success(results,'没有查询到相关结果', 'RESULT_NOT_FOUND');
         }
-        return res.success(result, '查询成功', 'SUCCESS');
+        return res.success(results, '查询成功', 'SUCCESS');
     } catch (error) {
         next(error);
     }

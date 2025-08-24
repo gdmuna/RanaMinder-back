@@ -36,9 +36,6 @@ module.exports = (sequelize, DataTypes) => {
     time_slot_id: {
       type: DataTypes.INTEGER
     },
-    selection_status: {
-      type: DataTypes.ENUM('pending', 'confirmed', 'cancelled'),
-    }
   }, {
     sequelize,
     modelName: 'User_selection',

@@ -25,9 +25,6 @@ module.exports = {
           key: 'id'
         }
       },
-      selection_status: {
-        type: Sequelize.ENUM('pending', 'confirmed', 'cancelled'),
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

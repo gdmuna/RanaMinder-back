@@ -24,8 +24,9 @@ exports.getAllApplications = async (req, res, next) => {
 exports.creatNewApplication = async (req, res, next) => {
   try {
     const data = req.body;
-    stu_id = req.user.name; // 从鉴权中间件获取用户信息
-    const newApplication = await applicationService.creatNewApplication(data, stu_id);
+    stu_id = req.user.name;
+    const file=req.file;
+    const newApplication = await applicationService.creatNewApplication(data, stu_id,file);
     return res.success(newApplication, '申请表创建成功', 'APPLICATION_CREATED');
   } catch (error) {
     next(error);
@@ -48,3 +49,28 @@ exports.getCampaignApplications = async (req, res, next) => {
     next(error);
   }
 };
+//查询当前用户的申请表
+exports.getCurrentUserApplications = async (req, res, next) => {
+  try {
+    const stuId = req.user.name; // 从鉴权中间件获取用户信息
+    const result = await applicationService.getCurrentUserApplications(stuId);
+    if (!result.applications || result.applications.length === 0) {
+      return res.success(result, '没有查询到相关申请表', 'APPLICATION_NOT_FOUND');
+    }
+    return res.success(result, '查询成功', 'SUCCESS');
+  } catch (error) {
+    next(error);
+  }
+}
+
+// 删除申请表
+exports.deleteApplication = async (req, res, next) => {
+  try {
+    const applicationId = req.params.id;
+    const stuId = req.user.name; 
+    await applicationService.deleteApplication(applicationId, stuId);
+    return res.success(null, '申请表删除成功', 'APPLICATION_DELETED');
+  } catch (error) {
+    next(error);
+  }
+}

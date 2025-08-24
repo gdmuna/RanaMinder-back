@@ -5,7 +5,7 @@ function successResponse(req, res, next) {
       data: {
         message,
         code,
-        data: data
+        ...data
       }
     });
   };

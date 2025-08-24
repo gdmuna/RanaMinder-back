@@ -1,4 +1,4 @@
-const { Campaign, User, Application, sequelize } = require('../models');
+const { Campaign, Application, Result, Stage, Seesion, Time_slot, User_selection, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const AppError = require('../utils/AppError');
 const application = require('../models/application');
@@ -68,7 +68,7 @@ exports.createNewCampaign = async (data) => {
         }
         // 创建新的面试
         const newCampaign = await Campaign.create(data, { transaction: t });
-        return newCampaign;
+        return {campaigns: newCampaign};
     });
 }
 
@@ -79,6 +79,9 @@ exports.updateCampaign = async (campaignId, data) => {
         const campaign = await Campaign.findByPk(campaignId);
         if (!campaign) {
             throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
+        }
+        if (!data.title && !data.description && !data.start_date && !data.end_date) {
+            throw new AppError('缺少必要的字段', 400, 'MISSING_FIELDS');
         }
         // 检查是否有重复的面试
         const existingCampaign = await Campaign.findOne({
@@ -98,26 +101,48 @@ exports.updateCampaign = async (campaignId, data) => {
         if (existingCampaign) {
             throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'CAMPAIGN_CONFLICT');
         }
-        // 检查字段
-        if (!data.title || !data.description || !data.start_date || !data.end_date) {
-            throw new AppError('缺少必要的字段', 400, 'MISSING_FIELDS');
-        }
         // 更新面试信息
         const updatedCampaign = await campaign.update(data, { transaction: t });
-        return updatedCampaign;
-    });
+        return {campaigns: updatedCampaign};
+    }); 
 }
 
 // 删除面试
 exports.deleteCampaign = async (campaignId) => {
     return await sequelize.transaction(async (t) => {
         // 检查面试是否存在
-        const campaign = await Campaign.findByPk(campaignId);
+        const campaign = await Campaign.findByPk(campaignId, { transaction: t });
         if (!campaign) {
             throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
         }
-        // 软删除面试
-        await campaign.destroy({campaignId},{ transaction: t });
+
+        // 删除所有与该面试相关的申请表和结果
+        const applications = await Application.findAll({ where: { campaign_id: campaignId }, transaction: t });
+        for (const app of applications) {
+            await Result.destroy({ where: { application_id: app.id }, transaction: t });
+            await app.destroy({ transaction: t });
+        }
+
+        // 删除所有与该面试相关的 stage
+        const stages = await Stage.findAll({ where: { campaign_id: campaignId }, transaction: t });
+        for (const stage of stages) {
+            // 删除 stage 下所有 session
+            const sessions = await Seesion.findAll({ where: { stage_id: stage.id }, transaction: t });
+            for (const session of sessions) {
+                // 删除 session 下所有 time_slot
+                const timeSlots = await Time_slot.findAll({ where: { session_id: session.id }, transaction: t });
+                for (const slot of timeSlots) {
+                    // 删除 time_slot 下所有 user_selection
+                    await User_selection.destroy({ where: { time_slot_id: slot.id }, transaction: t });
+                    await slot.destroy({ transaction: t });
+                }
+                await session.destroy({ transaction: t });
+            }
+            await stage.destroy({ transaction: t });
+        }
+
+        // 最后删除 campaign
+        await campaign.destroy({ transaction: t });
         return;
     });
-}
+};

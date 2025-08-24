@@ -8,7 +8,6 @@ module.exports = {
         id: 1,
         user_id: 1,
         time_slot_id: 1,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -16,7 +15,6 @@ module.exports = {
         id: 2,
         user_id: 2,
         time_slot_id: 1,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -24,7 +22,6 @@ module.exports = {
         id: 3,
         user_id: 3,
         time_slot_id: 2,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -32,7 +29,6 @@ module.exports = {
         id: 4,
         user_id: 4,
         time_slot_id: 2,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -40,7 +36,6 @@ module.exports = {
         id: 5,
         user_id: 5,
         time_slot_id: 3,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -48,7 +43,6 @@ module.exports = {
         id: 6,
         user_id: 6,
         time_slot_id: 3,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -56,7 +50,6 @@ module.exports = {
         id: 7,
         user_id: 7,
         time_slot_id: 4,
-        selection_status: 'confirmed',
         createdAt: new Date(),
         updatedAt: new Date()
       }

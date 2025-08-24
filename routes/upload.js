@@ -12,6 +12,6 @@ const router = express.Router();
 // 上传文件
 router.post('/file' ,upload.single('file'),uploadController.uploadFile);
 // 上传封面
-router.post('/cover', upload.single('file'), uploadController.uploadCover);
+router.post('/picture', upload.single('file'), uploadController.uploadPicture);
 
 module.exports = router;

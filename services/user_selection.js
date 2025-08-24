@@ -67,7 +67,7 @@ exports.getUserSelections = async (req) => {
     
     const result = formatUserSelections(selections);
 
-    return result;
+    return {User_selections: result};
 }
 
 // 获取当前用户的选择
@@ -122,7 +122,7 @@ exports.getCurrentUserSelection = async (req) => {
     }
     const result = formatUserSelections(selections);
 
-    return result;
+    return {user_selections: result};
 }
 
 //新增用户选择
@@ -213,7 +213,7 @@ exports.createUserSelection = async (data) => {
         where: { id: time_slot_id }
     });
 
-    return results;
+    return {user_selections: results};
 }
 
 // 删除用户选择
