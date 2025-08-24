@@ -17,7 +17,7 @@ exports.getAllResults = async (req, res, next) => {
             return res.success(results,'没有查询到相关结果', 'RESULT_NOT_FOUND');
         }
         
-        return res.success({results,pagination},'查询成功', 'SUCCESS');
+        return res.success({pagination,results},'查询成功', 'SUCCESS');
     } catch (error) {
         next(error);
     }
