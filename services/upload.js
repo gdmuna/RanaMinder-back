@@ -96,6 +96,9 @@ exports.uploadPicture = async (file, type) => {
         case 'photo':
             keyPrefix = 'photo/';
             break;
+        case 'avatar':
+            keyPrefix = 'avatar/';
+            break;
         default:
             throw new AppError('不支持的封面类型', 400, 'INVALID_COVER_TYPE');
     }
