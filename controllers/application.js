@@ -12,7 +12,7 @@ exports.getAllApplications = async (req, res, next) => {
     // 管理员获取面试的申请表
     const result = await applicationService.getAllApplications(req);
     if (!result.applications || result.applications.length === 0) {
-      return res.success(result, '没有查询到相关文章', 'NO_ARTICLE');
+      return res.success(result, '没有查询到相关文章', 'ARTICLE_NOT_FOUND');
     }
     return res.success(result, '查询成功', 'SUCCESS');
   } catch (error) {
