@@ -8,13 +8,13 @@ const AppError = require('../utils/AppError');
 
 // 获取casdoor登录页面的URL
 exports.getLoginUrl = async (req, res) => {
-  try {
-    const loginUrl = await authService.getLoginUrl();
-    console.log('登录地址:', loginUrl);
-    res.redirect(loginUrl);
-  } catch (error) {
-    next(error);
-  }
+    try {
+        const loginUrl = await authService.getLoginUrl();
+        console.log('登录地址:', loginUrl);
+        res.redirect(loginUrl);
+    } catch (error) {
+        next(error);
+    }
 };
 
 /**
