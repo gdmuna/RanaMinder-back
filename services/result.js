@@ -55,7 +55,7 @@ exports.getCurrentUserResults = async (req) => {
     });
 
     if (!results || results.length === 0) {
-        throw new AppError('没有查询到结果', 404, 'NO_RESULT');
+        throw new AppError('没有查询到结果', 404, 'RESULT_NOT_FOUND');
     }
 
     return { result: results };

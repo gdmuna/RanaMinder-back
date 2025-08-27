@@ -31,7 +31,7 @@ exports.getAllCampaigns = async (req) => {
     const campaigns = rows;
 
     if (!campaigns || campaigns.length === 0) {
-        throw new AppError('没有查询到申请表', 404, 'NO_APPLICATION');
+        throw new AppError('没有查询到申请表', 404, 'APPLICATION_NOT_FOUND');
     }
 
     return {

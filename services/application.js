@@ -31,7 +31,7 @@ exports.getAllApplications = async (req) => {
     const applications = rows;
 
     if (!applications || applications.length === 0) {
-        throw new AppError('没有查询到申请表', 401, 'NO_APPLICATION');
+        throw new AppError('没有查询到申请表', 404, 'APPLICATION_NOT_FOUND');
     }
 
     return {
@@ -137,7 +137,7 @@ exports.getCampaignApplications = async (req, campaignId) => {
     const totalPages = Math.ceil(count / pageSize);
     const applications = rows;
     if (!applications || applications.length === 0) {
-        throw new AppError('没有查询到申请表', 404, 'NO_APPLICATION');
+        throw new AppError('没有查询到申请表', 404, 'APPLICATION_NOT_FOUND');
     }
     return {
         pagination: {
