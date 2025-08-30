@@ -22,9 +22,9 @@ exports.getAllCampaigns = async (req, res, next) => {
 // 创建新的面试
 exports.createNewCampaign = async (req, res, next) => {
     try {
-        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-            throw new AppError('您没有权限发送消息', 403, 'NO_PERMISSION');
-        }
+        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+        //     throw new AppError('您没有权限创建面试', 403, 'NO_PERMISSION');
+        // }
         const data = req.body;
         const newCampaign = await campaignService.createNewCampaign(data);
         return res.success(newCampaign, '面试创建成功', 'CAMPAIGN_CREATED');
@@ -36,9 +36,9 @@ exports.createNewCampaign = async (req, res, next) => {
 // 更新面试信息
 exports.updateCampaign = async (req, res, next) => {
     try {
-        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-            throw new AppError('您没有权限更新面试', 403, 'NO_PERMISSION');
-        }
+        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+        //     throw new AppError('您没有权限更新面试', 403, 'NO_PERMISSION');
+        // }
         const campaignId = req.params.id;
         const data = req.body;
         const updatedCampaign = await campaignService.updateCampaign(campaignId, data);

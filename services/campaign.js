@@ -48,20 +48,6 @@ exports.getAllCampaigns = async (req) => {
 // 创建新的面试
 exports.createNewCampaign = async (data) => {
     return await sequelize.transaction(async (t) => {
-        // 检查是否有重复的面试
-        const existingCampaign = await Campaign.findOne({
-            where: {
-                start_date: {
-                    [Op.lte]: data.end_date,
-                },
-                end_date: {
-                    [Op.gte]: data.start_date,
-                },
-            },
-        });
-        if (existingCampaign) {
-            throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'CAMPAIGN_CONFLICT');
-        }
         // 检查字段
         if (!data.title || !data.description || !data.start_date || !data.end_date) {
             throw new AppError('缺少必要的字段', 400, 'MISSING_FIELDS');
