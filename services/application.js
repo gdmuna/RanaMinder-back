@@ -1,7 +1,8 @@
 const upload = require('../middlewares/multer');
 const { Application, User, Campaign, Result, sequelize } = require('../models');
-const {uploadPicture} = require('../services/upload');
+const { uploadPicture } = require('../services/upload');
 const AppError = require('../utils/AppError');
+const { Op } = require('sequelize');
 
 /**
  * @description 申请表服务
@@ -11,19 +12,41 @@ const AppError = require('../utils/AppError');
  * @returns {Promise<Object>} 返回申请表数据
  */
 
+//获取所有申请表，支持分页和多条件查询
 exports.getAllApplications = async (req) => {
-
     const query = req.query || {};
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
     const pageSize = Math.abs(Number(query.pageSize)) || 10;
     const offset = (currentPage - 1) * pageSize;
 
-
     const condition = {
         order: [['createdAt', 'DESC']],
         offset,
         limit: pageSize,
+        where: {}
     };
+
+    // 先收集基本查询条件
+    ['id', 'user_id', 'campaign_id', 'stu_id'].forEach(field => {
+        if (query[field]) {
+            condition.where[field] = query[field];
+        }
+    });
+
+    // 增加 information 字段的模糊查询
+    let keyword = query.infoKeyword;
+    if (keyword) {
+        // 使用 Op.and 组合条件
+        condition.where = {
+            ...condition.where,
+            [Op.and]: [
+                sequelize.where(
+                    sequelize.fn('LOWER', sequelize.cast(sequelize.col('information'), 'CHAR')),
+                    { [Op.like]: `%${keyword.toLowerCase()}%` }
+                )
+            ]
+        };
+    }
 
     const { count, rows } = await Application.findAndCountAll(condition);
 
@@ -36,23 +59,24 @@ exports.getAllApplications = async (req) => {
 
     return {
         pagination: {
-            currentPage,             // 当前页
-            pageSize,                // 每页记录数
-            totalRecords: count,     // 总记录数
-            totalPages,              // 总页数   
+            currentPage,
+            pageSize,
+            totalRecords: count,
+            totalPages,
         },
         applications
     };
 }
 
+//创建新的申请表
 exports.creatNewApplication = async (data, stu_id, file) => {
     // 保证 information 是对象
     if (typeof data.information === 'string') {
-           try{
+        try {
             data.information = JSON.parse(data.information);
-           }catch(err){
+        } catch (err) {
             throw new AppError('information 字段格式错误，必须是有效的 JSON 字符串', 400, 'INVALID_INFORMATION_FORMAT');
-           }
+        }
     }
     if (!data.information) {
         data.information = {};
@@ -114,40 +138,6 @@ exports.creatNewApplication = async (data, stu_id, file) => {
 
         return { applications: newApplication };
     });
-}
-
-// 获取特定面试的申请表
-exports.getCampaignApplications = async (req, campaignId) => {
-    const query = req.query || {};
-    const currentPage = Math.abs(Number(query.currentPage)) || 1;
-    const pageSize = Math.abs(Number(query.pageSize)) || 10;
-    const offset = (currentPage - 1) * pageSize;
-    // 检查面试是否存在
-    const campaign = await Campaign.findByPk(campaignId);
-    if (!campaign) {
-        throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
-    }
-
-    const { count, rows } = await Application.findAndCountAll({
-        where: { campaign_id: campaignId },
-        order: [['createdAt', 'DESC']],
-        offset,
-        limit: pageSize,
-    });
-    const totalPages = Math.ceil(count / pageSize);
-    const applications = rows;
-    if (!applications || applications.length === 0) {
-        throw new AppError('没有查询到申请表', 404, 'APPLICATION_NOT_FOUND');
-    }
-    return {
-        pagination: {
-            currentPage,             // 当前页
-            pageSize,                // 每页记录数
-            totalRecords: count,     // 总记录数
-            totalPages,              // 总页数
-        },
-        applications
-    };
 }
 
 //获取当前用户的申请表

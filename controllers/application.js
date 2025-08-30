@@ -9,6 +9,9 @@ const AppError = require('../utils/AppError'); // 添加这一行
 // 获取所有申请表
 exports.getAllApplications = async (req, res, next) => {
   try {
+    if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+      throw new AppError('您没有权限查看申请表', 403, 'NO_PERMISSION');
+    }
     // 管理员获取面试的申请表
     const result = await applicationService.getAllApplications(req);
     if (!result.applications || result.applications.length === 0) {
@@ -33,22 +36,6 @@ exports.creatNewApplication = async (req, res, next) => {
   }
 };
 
-// 获取特定面试的申请表
-exports.getCampaignApplications = async (req, res, next) => {
-  try {
-    if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-      throw new AppError('您没有权限查看申请表', 403, 'NO_PERMISSION');
-    }
-    const campaignId = req.params.campaign_id;
-    const result = await applicationService.getCampaignApplications(req, campaignId);
-    if (!result.applications || result.applications.length === 0) {
-      return res.success(result, '没有查询到相关申请表', 'APPLICATION_NOT_FOUND');
-    }
-    return res.success(result, '查询成功', 'SUCCESS');
-  } catch (error) {
-    next(error);
-  }
-};
 //查询当前用户的申请表
 exports.getCurrentUserApplications = async (req, res, next) => {
   try {
