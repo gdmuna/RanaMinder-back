@@ -20,7 +20,7 @@ exports.getAllCampaigns = async (req) => {
     const offset = (currentPage - 1) * pageSize;
 
     let  condition = {
-            order: [['createdAt', 'DESC']],
+            order: [['start_date', 'DESC']],
             offset,
             limit: pageSize,
         };
