@@ -15,8 +15,6 @@ router.get('/', applicationController.getAllApplications);
 router.post('/',upload.single('photo'),applicationController.creatNewApplication);
 //查询当前用户的申请表
 router.get('/me', applicationController.getCurrentUserApplications);
-// 获取特定面试的申请表
-router.get('/:campaign_id', applicationController.getCampaignApplications);
 // 删除申请表
 router.delete('/:id', applicationController.deleteApplication);
 
