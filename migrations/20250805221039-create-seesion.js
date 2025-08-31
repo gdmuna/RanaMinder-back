@@ -15,7 +15,9 @@ module.exports = {
         references: {
           model: 'stages',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       title: {
         type: Sequelize.STRING,

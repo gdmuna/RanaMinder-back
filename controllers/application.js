@@ -9,9 +9,9 @@ const AppError = require('../utils/AppError'); // 添加这一行
 // 获取所有申请表
 exports.getAllApplications = async (req, res, next) => {
   try {
-    if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-      throw new AppError('您没有权限查看申请表', 403, 'NO_PERMISSION');
-    }
+    // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+    //   throw new AppError('您没有权限查看申请表', 403, 'NO_PERMISSION');
+    // }
     // 管理员获取面试的申请表
     const result = await applicationService.getAllApplications(req);
     if (!result.applications || result.applications.length === 0) {

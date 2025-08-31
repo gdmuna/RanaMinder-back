@@ -18,9 +18,9 @@ exports.getAllSeesions = async (req, res, next) => {
 //创建面试节点
 exports.createNewSeesion = async (req, res, next) => {
     try {
-        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-            throw new AppError('您没有权限创建面试节点', 403, 'NO_PERMISSION');
-        }
+        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+        //     throw new AppError('您没有权限创建面试节点', 403, 'NO_PERMISSION');
+        // }
         const data = req.body;
         const newSeesion = await seesionService.createNewSeesion(data);
         return res.success(newSeesion, '面试节点创建成功', 'SEESION_CREATED');
@@ -32,9 +32,9 @@ exports.createNewSeesion = async (req, res, next) => {
 //更新面试节点
 exports.updateSeesion = async (req, res, next) => {
     try {
-        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-            throw new AppError('您没有权限更新面试节点', 403, 'NO_PERMISSION');
-        }
+        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+        //     throw new AppError('您没有权限更新面试节点', 403, 'NO_PERMISSION');
+        // }
         const seesionId = req.params.id;
         const data = req.body;
         const updatedSeesion = await seesionService.updateSeesion(seesionId, data);
@@ -47,9 +47,9 @@ exports.updateSeesion = async (req, res, next) => {
 //删除面试节点
 exports.deleteSeesion = async (req, res, next) => {
     try {
-        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-            throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
-        }
+        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
+        //     throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
+        // }
         const seesionId = req.params.id;
         await seesionService.deleteSeesion(seesionId);
         return res.success(null, '面试节点删除成功', 'SEESION_DELETED');

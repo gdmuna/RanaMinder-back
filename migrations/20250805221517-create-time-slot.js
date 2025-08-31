@@ -15,7 +15,9 @@ module.exports = {
         references: {
           model: 'seesions',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       start_time: {
         type: Sequelize.DATE,

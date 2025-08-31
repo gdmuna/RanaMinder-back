@@ -91,7 +91,7 @@ exports.createNewSeesion = async (data) => {
         end_time,
         location
     });
-    return {sessions:mnewSeesion};
+    return {sessions:newSeesion};
 }
 
 /**

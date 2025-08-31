@@ -16,6 +16,8 @@ module.exports = {
           model: 'campaigns', 
           key: 'id'
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       title: {
         type: Sequelize.STRING,

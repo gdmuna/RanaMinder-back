@@ -16,6 +16,8 @@ module.exports = {
           model: 'users',
           key: 'id'       
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       campaign_id: {
         type: Sequelize.INTEGER,
@@ -24,6 +26,8 @@ module.exports = {
           model: 'campaigns', 
           key: 'id'           
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       stu_id: {
         type: Sequelize.STRING,
