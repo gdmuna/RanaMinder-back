@@ -1,4 +1,4 @@
-const {Time_slot,Seesion, sequelize} = require('../models');
+const { Time_slot, Seesion, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const AppError = require('../utils/AppError');
 
@@ -9,7 +9,7 @@ const AppError = require('../utils/AppError');
  * @requires models/Seesion
  * @requires utils/AppError
  * @returns {Promise<Object>} 返回时间段数据
- */ 
+ */
 
 exports.getTimeSlotsBySeesionId = async (seesion_id) => {
 
@@ -98,7 +98,7 @@ exports.createNewTimeSlot = async (data) => {
         booked_seats: 0,
         is_available: true
     });
-    return {time_slots: newTimeSlot};
+    return { time_slots: newTimeSlot };
 }
 
 //删除时间段
@@ -182,6 +182,6 @@ exports.updateTimeSlot = async (id, data) => {
         timeSlot.is_available = (timeSlot.booked_seats < max_seats);
     }
     await timeSlot.save();
-    return {time_slots: timeSlot};
+    return { time_slots: timeSlot };
 }
 

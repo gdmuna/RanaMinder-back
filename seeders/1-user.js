@@ -73,6 +73,16 @@ await queryInterface.bulkInsert('users', [
         is_forzen: false,
         createdAt: new Date(),
         updatedAt: new Date(),
+      },
+      {
+        id: 8,
+        stu_id: '24209140415',
+        name: '谢培果',
+        sso_id: '0191e68e-2b2a-7482-872f-c8bbda9fd0e6',
+        last_signin_time: new Date(),
+        is_forzen: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
     ]);
   },
