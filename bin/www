@@ -1,91 +1,62 @@
 #!/usr/bin/env node
 
 /**
- * Module dependencies.
+ * Nekorify 后端服务入口文件
  */
 
-var app = require('../app');
-var debug = require('debug')('ranaminder-back:server');
-var http = require('http');
+// ==================== 模块依赖 ====================
 
-/**
- * Get port from environment and store in Express.
- */
+// 环境变量配置
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV || "development"}`,
+});
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+// Express 及第三方中间件
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
 
-/**
- * Create HTTP server.
- */
+// 自定义中间件
+const errorHandlerMiddleware = require("../middlewares/errorHandle");
+const successResponse = require("../middlewares/successResponse");
+const apiProtected = require("../middlewares/apiProtected");
 
-var server = http.createServer(app);
+// 路由
+const router = require("../routes/index");
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+// ==================== 应用配置 ====================
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+const app = express();
 
-/**
- * Normalize a port into a number, string, or false.
- */
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(successResponse);
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+app.use(apiProtected);
+app.use("/api", router);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
+app.use(errorHandlerMiddleware);
+
+// ==================== 服务器启动 ====================
+
+const server = app.listen(
+  process.env.PORT || 33001,
+  process.env.HOST || "127.0.0.1",
+  () => {
+    console.log(
+      "Server running at http://%s:%s",
+      process.env.HOST || "127.0.0.1",
+      process.env.PORT || 33001
+    );
+    console.log("Environment=%s", process.env.NODE_ENV);
   }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-  console.log('后端服务地址' + addr.port);
-}
+);
