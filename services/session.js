@@ -1,30 +1,30 @@
-const { Seesion, Stage, sequelize } = require('../models');
+const { Session, Stage, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const AppError = require('../utils/AppError');
 
 /**
  * @description 面试服务
  * @module services/session
- * @requires models/Seesion
+ * @requires models/Session
  * @requires models/Stage
  * @requires utils/AppError
  * @returns {Promise<Object>} 返回面试数据
  */
 
-//查询stage的seesion
-exports.getSeesionByStageId = async (stage_id) => {
+//查询stage的session
+exports.getSessionByStageId = async (stage_id) => {
 
     // 检查阶段是否存在
     const stage = await Stage.findByPk(stage_id);
     if (!stage) {
         throw new AppError('阶段不存在', 404, 'STAGE_NOT_FOUND');
     }
-    const seesions = await Seesion.findAll({
+    const sessions = await Session.findAll({
         where: { stage_id },
         order: [['createdAt', 'DESC']],
     });
     return {
-        seesions
+        sessions
     };
 }
 
@@ -33,7 +33,7 @@ exports.getSeesionByStageId = async (stage_id) => {
  * @param {Object} data - 面试节点数据
  * @returns {Promise<Object>} 返回新创建的面试节点数据
  */
-exports.createNewSeesion = async (data) => {
+exports.createNewSession = async (data) => {
     const { stage_id, title, start_time, end_time, location } = data;
     // 检查必填字段
     if (!stage_id || !title || !start_time || !end_time || !location) {
@@ -46,7 +46,7 @@ exports.createNewSeesion = async (data) => {
     }
 
     // 检查时间段是否在面试里面
-    const existingSeesion = await Seesion.findOne({
+    const existingSession = await Session.findOne({
         where: {
             stage_id,
             [Op.or]: [
@@ -75,8 +75,8 @@ exports.createNewSeesion = async (data) => {
             ]
         }
     });
-    if (existingSeesion) {
-        throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SEESION_CONFLICT');
+    if (existingSession) {
+        throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SESSION_CONFLICT');
     }
     // 检查时间是否合理
     if (new Date(start_time) >= new Date(end_time)) {
@@ -84,14 +84,14 @@ exports.createNewSeesion = async (data) => {
     }
 
     // 创建新的面试节点
-    const newSeesion = await Seesion.create({
+    const newSession = await Session.create({
         stage_id,
         title,
         start_time,
         end_time,
         location
     });
-    return {sessions:newSeesion};
+    return {sessions:newSession};
 }
 
 /**
@@ -100,15 +100,15 @@ exports.createNewSeesion = async (data) => {
  * @param {Object} data - 更新数据
  * @returns {Promise<Object>} 返回更新后的面试节点数据
  */
-exports.updateSeesion = async (id, data) => {
+exports.updateSession = async (id, data) => {
     // 检查必填字段
     if (!data.stage_id && !data.title && !data.start_time && !data.end_time && !data.location) {
         throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
     // 检查面试节点是否存在
-    const session = await Seesion.findByPk(id);
+    const session = await Session.findByPk(id);
     if (!session) {
-        throw new AppError('面试节点不存在', 404, 'SEESION_NOT_FOUND');
+        throw new AppError('面试节点不存在', 404, 'SESSION_NOT_FOUND');
     }
 
     // 检查阶段是否存在（如果有变更）
@@ -131,7 +131,7 @@ exports.updateSeesion = async (id, data) => {
 
     // 检查时间冲突
     if (data.start_time || data.end_time || data.stage_id) {
-        const conflict = await Seesion.findOne({
+        const conflict = await Session.findOne({
             where: {
                 stage_id: targetStageId,
                 id: { [Op.ne]: id }, // 排除自己
@@ -160,13 +160,13 @@ exports.updateSeesion = async (id, data) => {
             }
         });
         if (conflict) {
-            throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SEESION_CONFLICT');
+            throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SESSION_CONFLICT');
         }
     }
 
     // 更新面试节点
-    const updatedSeesion = await session.update(data);
-    return {sessions: updatedSeesion};
+    const updatedSession = await session.update(data);
+    return {sessions: updatedSession};
 }
 
 /**
@@ -174,11 +174,11 @@ exports.updateSeesion = async (id, data) => {
  * @param {number} id - 面试节点ID
  * @returns {Promise<void>} 无返回值
  */
-exports.deleteSeesion = async (id) => {
+exports.deleteSession = async (id) => {
     // 检查面试节点是否存在
-    const session = await Seesion.findByPk(id);
+    const session = await Session.findByPk(id);
     if (!session) {
-        throw new AppError('面试节点不存在', 404, 'SEESION_NOT_FOUND');
+        throw new AppError('面试节点不存在', 404, 'SESSION_NOT_FOUND');
     }
     // 软删除面试节点
     await session.destroy();

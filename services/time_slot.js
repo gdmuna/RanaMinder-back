@@ -1,4 +1,4 @@
-const { Time_slot, Seesion, sequelize } = require('../models');
+const { Time_slot, Session, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const AppError = require('../utils/AppError');
 
@@ -6,20 +6,20 @@ const AppError = require('../utils/AppError');
  * @description 时间段服务
  * @module services/time_slot
  * @requires models/Time_slot
- * @requires models/Seesion
+ * @requires models/Session
  * @requires utils/AppError
  * @returns {Promise<Object>} 返回时间段数据
  */
 
-exports.getTimeSlotsBySeesionId = async (seesion_id) => {
+exports.getTimeSlotsBySessionId = async (session_id) => {
 
     // 检查面试是否存在
-    const session = await Seesion.findByPk(seesion_id);
+    const session = await Session.findByPk(session_id);
     if (!session) {
-        throw new AppError('面试不存在', 404, 'SEESION_NOT_FOUND');
+        throw new AppError('面试不存在', 404, 'SESSION_NOT_FOUND');
     }
     const time_slots = await Time_slot.findAll({
-        where: { seesion_id },
+        where: { session_id },
         order: [['createdAt', 'DESC']],
     });
     return {
@@ -33,15 +33,15 @@ exports.getTimeSlotsBySeesionId = async (seesion_id) => {
  * @return {Promise<Object>} 返回新创建的时间段数据
  */
 exports.createNewTimeSlot = async (data) => {
-    const { seesion_id, start_time, end_time, max_seats } = data;
+    const { session_id, start_time, end_time, max_seats } = data;
     // 检查必填字段
-    if (!seesion_id || !start_time || !end_time || !max_seats) {
+    if (!session_id || !start_time || !end_time || !max_seats) {
         throw new AppError('参数缺失，请检查参数', 400, 'MISSING_REQUIRED_FIELDS');
     }
     // 检查面试节点是否存在
-    const session = await Seesion.findByPk(seesion_id);
+    const session = await Session.findByPk(session_id);
     if (!session) {
-        throw new AppError('指定的seesion不存在', 404, 'SEESION_NOT_FOUND');
+        throw new AppError('指定的session不存在', 404, 'SESSION_NOT_FOUND');
     }
 
     const start = new Date(start_time);
@@ -52,15 +52,15 @@ exports.createNewTimeSlot = async (data) => {
         throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
     }
 
-    // 检查时间段是否在seesion时间范围内
+    // 检查时间段是否在session时间范围内
     if (start < session.start_time || end > session.end_time) {
-        throw new AppError('时间段必须在对应seesion的时间范围内', 400, 'TIME_SLOT_OUT_OF_SEESION');
+        throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
     }
 
     // 检查时间段是否与已有时间段冲突
     const existingTimeSlot = await Time_slot.findOne({
         where: {
-            seesion_id,
+            session_id,
             [Op.or]: [
                 {
                     start_time: {
@@ -91,7 +91,7 @@ exports.createNewTimeSlot = async (data) => {
 
     // 创建新时间段
     const newTimeSlot = await Time_slot.create({
-        seesion_id,
+        session_id,
         start_time: start,
         end_time: end,
         max_seats: max_seats,
@@ -130,16 +130,16 @@ exports.updateTimeSlot = async (id, data) => {
             throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
         }
 
-        // 检查时间段是否在seesion时间范围内
-        const session = await Seesion.findByPk(timeSlot.seesion_id);
+        // 检查时间段是否在session时间范围内
+        const session = await Session.findByPk(timeSlot.session_id);
         if (start < session.start_time || end > session.end_time) {
-            throw new AppError('时间段必须在对应seesion的时间范围内', 400, 'TIME_SLOT_OUT_OF_SEESION');
+            throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
         }
 
         // 检查时间段是否与已有时间段冲突
         const existingTimeSlot = await Time_slot.findOne({
             where: {
-                seesion_id: timeSlot.seesion_id,
+                session_id: timeSlot.session_id,
                 id: { [Op.ne]: id }, // 排除当前时间段
                 [Op.or]: [
                     {

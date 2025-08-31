@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'time_slot_id',
         sourceKey: 'id',
       });
-      this.belongsTo(models.Seesion, {
-        foreignKey: 'seesion_id',
+      this.belongsTo(models.Session, {
+        foreignKey: 'session_id',
         targetKey: 'id',
         as: 'session'
       });
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    seesion_id: {
+    session_id: {
       type: DataTypes.INTEGER
     },
     start_time: {
@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     indexes: [
       {
         unique: true,
-        fields: ['seesion_id']
+        fields: ['session_id']
       }
     ]
   });

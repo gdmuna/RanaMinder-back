@@ -1,14 +1,14 @@
-const seesionController = require('../controllers/session.js');
+const sessionController = require('../controllers/session.js');
 const express = require('express');
 const router = express.Router();
 
 //查询面试节点
-router.get('/:stage_id', seesionController.getAllSeesions);
+router.get('/:stage_id', sessionController.getAllSessions);
 //创建面试节点
-router.post('/', seesionController.createNewSeesion);
+router.post('/', sessionController.createNewSession);
 // //更新面试节点
-router.put('/:id', seesionController.updateSeesion);
+router.put('/:id', sessionController.updateSession);
 // //删除面试节点
-router.delete('/:id', seesionController.deleteSeesion);
+router.delete('/:id', sessionController.deleteSession);
 
 module.exports = router;

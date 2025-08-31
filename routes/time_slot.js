@@ -7,8 +7,8 @@ const router = express.Router();
  * @module routes/time_slot
  */
 
-// 获取seesion时间段
-router.get('/:seesion_id', time_slotController.getTimeSlotsBySeesionId);
+// 获取session时间段
+router.get('/:session_id', time_slotController.getTimeSlotsBySessionId);
 // 创建新的时间段
 router.post('/', time_slotController.createNewTimeSlot);
 // 更新时间段信息

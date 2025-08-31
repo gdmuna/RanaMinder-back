@@ -1,4 +1,4 @@
-const { Campaign, Application, Result, Stage, Seesion, Time_slot, User_selection, sequelize } = require('../models');
+const { Campaign, Application, Result, Stage, Session, Time_slot, User_selection, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const AppError = require('../utils/AppError');
 const application = require('../models/application');
@@ -113,7 +113,7 @@ exports.deleteCampaign = async (campaignId) => {
         const stages = await Stage.findAll({ where: { campaign_id: campaignId }, transaction: t });
         for (const stage of stages) {
             // 删除 stage 下所有 session
-            const sessions = await Seesion.findAll({ where: { stage_id: stage.id }, transaction: t });
+            const sessions = await Session.findAll({ where: { stage_id: stage.id }, transaction: t });
             for (const session of sessions) {
                 // 删除 session 下所有 time_slot
                 const timeSlots = await Time_slot.findAll({ where: { session_id: session.id }, transaction: t });

@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Seesion extends Model {
+  class Session extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Time_slot, {
-        foreignKey: 'seesion_id',
+        foreignKey: 'session_id',
         sourceKey: 'id',
       });
       this.belongsTo(models.Stage, {
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Seesion.init({
+  Session.init({
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -52,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Seesion',
-    tableName: 'seesions',
+    modelName: 'Session',
+    tableName: 'sessions',
     paranoid: true,
     deletedAt: 'deletedAt',
     timestamps: true,
@@ -64,5 +64,5 @@ module.exports = (sequelize, DataTypes) => {
       }
     ]
   });
-  return Seesion;
+  return Session;
 };

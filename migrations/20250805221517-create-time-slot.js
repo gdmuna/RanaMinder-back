@@ -9,11 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      seesion_id: {
+      session_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'seesions',
+          model: 'sessions',
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -52,7 +52,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-    await queryInterface.addIndex('time_slots', ['seesion_id']);
+    await queryInterface.addIndex('time_slots', ['session_id']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('time_slots');

@@ -1,11 +1,11 @@
 const time_slotService = require('../services/time_slot.js');
 const AppError = require('../utils/AppError'); // 添加这一行
 
-// 获取seesion时间段
-exports.getTimeSlotsBySeesionId = async (req, res,next) => {
+// 获取session时间段
+exports.getTimeSlotsBySessionId = async (req, res,next) => {
     try {
-        const seesion_id = req.params.seesion_id;
-        const result = await time_slotService.getTimeSlotsBySeesionId(seesion_id);
+        const session_id = req.params.session_id;
+        const result = await time_slotService.getTimeSlotsBySessionId(session_id);
         if (!result.time_slots || result.time_slots.length === 0) {
             return res.success(result, '没有查询到相关时间段', 'TIME_SLOT_NOT_FOUND');
         }
@@ -19,7 +19,7 @@ exports.getTimeSlotsBySeesionId = async (req, res,next) => {
 exports.createNewTimeSlot = async (req, res, next) => {
     try {
         // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限创建seesion', 403, 'NO_PERMISSION');
+        //     throw new AppError('您没有权限创建session', 403, 'NO_PERMISSION');
         // }
     const data = req.body;
     const newTimeSlot = await time_slotService.createNewTimeSlot(data);

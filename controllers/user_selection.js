@@ -35,7 +35,7 @@ exports.getCurrentUserSelection = async (req, res, next) => {
 exports.createUserSelection = async (req, res, next) => {
     try {
         // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限创建seesion', 403, 'NO_PERMISSION');
+        //     throw new AppError('您没有权限创建session', 403, 'NO_PERMISSION');
         // }
         const result = await user_selectionService.createUserSelection(req.body);
         return res.success(result, '创建成功', 'CREATION_SUCCESS');

@@ -1,4 +1,4 @@
-const { User, User_selection, Time_slot, Seesion, Stage, Campaign,sequelize } = require('../models');
+const { User, User_selection, Time_slot, Session, Stage, Campaign,sequelize } = require('../models');
 const { Op } = require('sequelize');
 const { formatUserSelections } = require('../utils/format');
 const AppError = require('../utils/AppError');
@@ -10,7 +10,7 @@ const AppError = require('../utils/AppError');
  * @requires models/User
  * @requires models/User_selection
  * @requires models/Time_slot
- * @requires models/Seesion
+ * @requires models/Session
  * @requires models/Stage
  * @requires models/Campaign
  * @requires utils/AppError
@@ -41,7 +41,7 @@ exports.getUserSelections = async (req) => {
                 required: true,
                 include: [
                     {
-                        model: Seesion,
+                        model: Session,
                         as: 'session',
                         required: true,
                         include: [
@@ -94,7 +94,7 @@ exports.getCurrentUserSelection = async (req) => {
                 required: true,
                 include: [
                     {
-                        model: Seesion,
+                        model: Session,
                         as: 'session',
                         required: true,
                         include: [
@@ -158,7 +158,7 @@ exports.createUserSelection = async (data) => {
         // 查询当前 time_slot 的 stage_id
         const currentTimeSlot = await Time_slot.findByPk(time_slot_id, {
             include: [{
-                model: Seesion,
+                model: Session,
                 as: 'session',
                 include: [{
                     model: Stage,
@@ -178,7 +178,7 @@ exports.createUserSelection = async (data) => {
                 model: Time_slot,
                 as: 'time_slot',
                 include: [{
-                    model: Seesion,
+                    model: Session,
                     as: 'session',
                     where: { stage_id: stageId }
                 }]
