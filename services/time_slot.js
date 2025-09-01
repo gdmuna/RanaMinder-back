@@ -20,7 +20,7 @@ exports.getTimeSlotsBySessionId = async (session_id) => {
     }
     const time_slots = await Time_slot.findAll({
         where: { session_id },
-        order: [['createdAt', 'DESC']],
+        order: [['createdAt', 'ASC']],
     });
     return {
         time_slots
@@ -58,36 +58,36 @@ exports.createNewTimeSlot = async (data) => {
     }
 
     // 检查时间段是否与已有时间段冲突
-    const existingTimeSlot = await Time_slot.findOne({
-        where: {
-            session_id,
-            [Op.or]: [
-                {
-                    start_time: {
-                        [Op.lt]: end,
-                        [Op.gte]: start
-                    }
-                },
-                {
-                    end_time: {
-                        [Op.lte]: end,
-                        [Op.gt]: start
-                    }
-                },
-                {
-                    start_time: {
-                        [Op.lte]: start
-                    },
-                    end_time: {
-                        [Op.gte]: end
-                    }
-                }
-            ]
-        }
-    });
-    if (existingTimeSlot) {
-        throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
-    }
+    // const existingTimeSlot = await Time_slot.findOne({
+    //     where: {
+    //         session_id,
+    //         [Op.or]: [
+    //             {
+    //                 start_time: {
+    //                     [Op.lt]: end,
+    //                     [Op.gte]: start
+    //                 }
+    //             },
+    //             {
+    //                 end_time: {
+    //                     [Op.lte]: end,
+    //                     [Op.gt]: start
+    //                 }
+    //             },
+    //             {
+    //                 start_time: {
+    //                     [Op.lte]: start
+    //                 },
+    //                 end_time: {
+    //                     [Op.gte]: end
+    //                 }
+    //             }
+    //         ]
+    //     }
+    // });
+    // if (existingTimeSlot) {
+    //     throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
+    // }
 
     // 创建新时间段
     const newTimeSlot = await Time_slot.create({
@@ -137,37 +137,37 @@ exports.updateTimeSlot = async (id, data) => {
         }
 
         // 检查时间段是否与已有时间段冲突
-        const existingTimeSlot = await Time_slot.findOne({
-            where: {
-                session_id: timeSlot.session_id,
-                id: { [Op.ne]: id }, // 排除当前时间段
-                [Op.or]: [
-                    {
-                        start_time: {
-                            [Op.lt]: end,
-                            [Op.gte]: start
-                        }
-                    },
-                    {
-                        end_time: {
-                            [Op.lte]: end,
-                            [Op.gt]: start
-                        }
-                    },
-                    {
-                        start_time: {
-                            [Op.lte]: start
-                        },
-                        end_time: {
-                            [Op.gte]: end
-                        }
-                    }
-                ]
-            }
-        });
-        if (existingTimeSlot) {
-            throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
-        }
+        // const existingTimeSlot = await Time_slot.findOne({
+        //     where: {
+        //         session_id: timeSlot.session_id,
+        //         id: { [Op.ne]: id }, // 排除当前时间段
+        //         [Op.or]: [
+        //             {
+        //                 start_time: {
+        //                     [Op.lt]: end,
+        //                     [Op.gte]: start
+        //                 }
+        //             },
+        //             {
+        //                 end_time: {
+        //                     [Op.lte]: end,
+        //                     [Op.gt]: start
+        //                 }
+        //             },
+        //             {
+        //                 start_time: {
+        //                     [Op.lte]: start
+        //                 },
+        //                 end_time: {
+        //                     [Op.gte]: end
+        //                 }
+        //             }
+        //         ]
+        //     }
+        // });
+        // if (existingTimeSlot) {
+        //     throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
+        // }
 
         timeSlot.start_time = start;
         timeSlot.end_time = end;

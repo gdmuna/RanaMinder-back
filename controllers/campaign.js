@@ -41,6 +41,8 @@ exports.updateCampaign = async (req, res, next) => {
         // }
         const campaignId = req.params.id;
         const data = req.body;
+        console.log('123456789', data);
+        
         const updatedCampaign = await campaignService.updateCampaign(campaignId, data);
         return res.success(updatedCampaign, '面试更新成功', 'CAMPAIGN_UPDATED');
     } catch (error) {

@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development nodemon ./bin/www",
-    "start:prod": "cross-env NODE_ENV=production node ./bin/www",
-    "reset-db": "cross-env NODE_ENV=development sequelize db:migrate:undo:all && cross-env NODE_ENV=development sequelize db:migrate",
-    "reset-seed": "cross-env NODE_ENV=development sequelize db:seed:undo:all && cross-env NODE_ENV=development sequelize db:seed:all"
+    "start:prod": "cross-env NODE_ENV=production nodemon ./bin/www",
+    "reset-db": "cross-env NODE_ENV=production sequelize db:migrate:undo:all && cross-env NODE_ENV=production sequelize db:migrate",
+    "reset-seed": "cross-env NODE_ENV=production sequelize db:seed:undo:all && cross-env NODE_ENV=production sequelize db:seed:all"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.872.0",
