@@ -12,6 +12,10 @@ exports.getAllResults = async (req, res, next) => {
         //  if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
         //     throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
         // }
+        // 支持通过 query.user_id 传递用户id进行筛选
+        if (req.query.user_id) {
+            req.query.user_id = req.query.user_id;
+        }
         const {results,pagination} = await ResultService.getAllResults(req);
         if (!results || results.length === 0) {
             return res.success(results,'没有查询到相关结果', 'RESULT_NOT_FOUND');

@@ -23,6 +23,11 @@ exports.getAllResults = async (req) => {
     if(query.campaign_id) {
         condition.where = { campaign_id: query.campaign_id };
     }
+    // 增加用户id筛选
+    if(query.user_id) {
+        condition.where = condition.where || {};
+        condition.where.user_id = query.user_id;
+    }
     
     const { count, rows } = await Result.findAndCountAll(condition);
     const totalPages = Math.ceil(count / pageSize);

@@ -185,3 +185,40 @@ exports.updateTimeSlot = async (id, data) => {
     return { time_slots: timeSlot };
 }
 
+/**
+ * @description 通过campaignId查找所有下属的时间段
+ * @param {number} campaignId - 面试ID
+ * @returns {Promise<Object>} 返回所有相关时间段
+ */
+exports.getTimeSlotsByCampaignId = async (campaignId) => {
+    const { Campaign, Stage, Session } = require('../models');
+    
+    // 检查面试是否存在
+    const campaign = await Campaign.findByPk(campaignId);
+    if (!campaign) {
+        throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
+    }
+    
+    // 查找所有关联的阶段、面试节点和时间段
+    const timeSlots = await Time_slot.findAll({
+        include: [
+            {
+                model: Session,
+                as: 'session',
+                required: true,
+                include: [
+                    {
+                        model: Stage,
+                        as: 'stage',
+                        required: true,
+                        where: { campaign_id: campaignId }
+                    }
+                ]
+            }
+        ],
+        order: [['start_time', 'ASC']]
+    });
+    
+    return { time_slots: timeSlots };
+}
+

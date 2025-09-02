@@ -9,6 +9,8 @@ const router = express.Router();
 
 // 获取session时间段
 router.get('/:session_id', time_slotController.getTimeSlotsBySessionId);
+// 获取面试下所有时间段
+router.get('/campaign/:campaignId', time_slotController.getTimeSlotsByCampaignId);
 // 创建新的时间段
 router.post('/', time_slotController.createNewTimeSlot);
 // 更新时间段信息
