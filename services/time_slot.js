@@ -48,14 +48,14 @@ exports.createNewTimeSlot = async (data) => {
     const end = new Date(end_time);
 
     // 检查时间顺序
-    if (start >= end) {
-        throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
-    }
+    // if (start >= end) {
+    //     throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+    // }
 
     // 检查时间段是否在session时间范围内
-    if (start < session.start_time || end > session.end_time) {
-        throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
-    }
+    // if (start < session.start_time || end > session.end_time) {
+    //     throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
+    // }
 
     // 检查时间段是否与已有时间段冲突
     // const existingTimeSlot = await Time_slot.findOne({
@@ -126,15 +126,15 @@ exports.updateTimeSlot = async (id, data) => {
         const end = end_time ? new Date(end_time) : timeSlot.end_time;
 
         // 检查时间顺序
-        if (start >= end) {
-            throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
-        }
+        // if (start >= end) {
+        //     throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+        // }
 
         // 检查时间段是否在session时间范围内
-        const session = await Session.findByPk(timeSlot.session_id);
-        if (start < session.start_time || end > session.end_time) {
-            throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
-        }
+        // const session = await Session.findByPk(timeSlot.session_id);
+        // if (start < session.start_time || end > session.end_time) {
+        //     throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
+        // }
 
         // 检查时间段是否与已有时间段冲突
         // const existingTimeSlot = await Time_slot.findOne({
