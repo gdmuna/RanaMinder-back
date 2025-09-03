@@ -11,16 +11,19 @@ const AppError = require('../utils/AppError');
 
 exports.getAllStages = async (req) => {
     let stages;
-    console.log('获取所有阶段' + req.query.campaign_id);
-    if (req.query.campaign_id) {
+    // 支持两种方式：query 参数和 path 参数
+    const campaign_id = req.params.campaign_id;
+    console.log('获取所有阶段，campaign_id：' + campaign_id);
+    
+    if (campaign_id) {
         // 如果提供了campaign_id，则只查询该campaign的阶段
         stages = await Stage.findAll({
-            where: { campaign_id: req.query.campaign_id },
-            order: [['sort_order', 'DESC']],
+            where: { campaign_id },
+            order: [['sort_order', 'ASC']],
         })
     } else {
         stages = await Stage.findAll({
-            order: [['createdAt', 'DESC']],
+            order: [['createdAt', 'ASC']],
         });
     }
     return {
@@ -43,15 +46,15 @@ exports.createNewStage = async (data) => {
     }
 
     // 检查阶段标题是否已存在
-    const existingStage = await Stage.findOne({
-        where: {
-            title,
-            campaign_id,
-        },
-    });
-    if (existingStage) {
-        throw new AppError('阶段标题已存在，请使用其他标题', 400, 'STAGE_TITLE_EXISTS');
-    }
+    // const existingStage = await Stage.findOne({
+    //     where: {
+    //         title,
+    //         campaign_id,
+    //     },
+    // });
+    // if (existingStage) {
+    //     throw new AppError('阶段标题已存在，请使用其他标题', 400, 'STAGE_TITLE_EXISTS');
+    // }
 
     // 检查campaign_id是否存在
     const campaignExists = await sequelize.models.Campaign.findByPk(campaign_id);

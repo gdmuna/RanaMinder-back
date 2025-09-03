@@ -21,7 +21,7 @@ exports.getSessionByStageId = async (stage_id) => {
     }
     const sessions = await Session.findAll({
         where: { stage_id },
-        order: [['createdAt', 'DESC']],
+    order: [['createdAt', 'ASC']],
     });
     return {
         sessions
@@ -130,39 +130,39 @@ exports.updateSession = async (id, data) => {
     }
 
     // 检查时间冲突
-    if (data.start_time || data.end_time || data.stage_id) {
-        const conflict = await Session.findOne({
-            where: {
-                stage_id: targetStageId,
-                id: { [Op.ne]: id }, // 排除自己
-                [Op.or]: [
-                    {
-                        start_time: {
-                            [Op.lt]: newEnd,
-                            [Op.gte]: newStart
-                        }
-                    },
-                    {
-                        end_time: {
-                            [Op.lte]: newEnd,
-                            [Op.gt]: newStart
-                        }
-                    },
-                    {
-                        start_time: {
-                            [Op.lte]: newStart
-                        },
-                        end_time: {
-                            [Op.gte]: newEnd
-                        }
-                    }
-                ]
-            }
-        });
-        if (conflict) {
-            throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SESSION_CONFLICT');
-        }
-    }
+    // if (data.start_time || data.end_time || data.stage_id) {
+    //     const conflict = await Session.findOne({
+    //         where: {
+    //             stage_id: targetStageId,
+    //             id: { [Op.ne]: id }, // 排除自己
+    //             [Op.or]: [
+    //                 {
+    //                     start_time: {
+    //                         [Op.lt]: newEnd,
+    //                         [Op.gte]: newStart
+    //                     }
+    //                 },
+    //                 {
+    //                     end_time: {
+    //                         [Op.lte]: newEnd,
+    //                         [Op.gt]: newStart
+    //                     }
+    //                 },
+    //                 {
+    //                     start_time: {
+    //                         [Op.lte]: newStart
+    //                     },
+    //                     end_time: {
+    //                         [Op.gte]: newEnd
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     });
+    //     if (conflict) {
+    //         throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SESSION_CONFLICT');
+    //     }
+    // }
 
     // 更新面试节点
     const updatedSession = await session.update(data);

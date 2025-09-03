@@ -19,11 +19,11 @@ exports.getAllCampaigns = async (req) => {
     const pageSize = Math.abs(Number(query.pageSize)) || 10;
     const offset = (currentPage - 1) * pageSize;
 
-    let  condition = {
-            order: [['start_date', 'DESC']],
-            offset,
-            limit: pageSize,
-        };
+    let condition = {
+        order: [['start_date', 'DESC']],
+        offset,
+        limit: pageSize,
+    };
 
 
     const { count, rows } = await Campaign.findAndCountAll(condition);
@@ -49,12 +49,12 @@ exports.getAllCampaigns = async (req) => {
 exports.createNewCampaign = async (data) => {
     return await sequelize.transaction(async (t) => {
         // 检查字段
-        if (!data.title || !data.description || !data.start_date || !data.end_date) {
+        if ([data.title, data.description, data.start_date, data.end_date].some(v => v === undefined || v === null)) {
             throw new AppError('缺少必要的字段', 400, 'MISSING_FIELDS');
         }
         // 创建新的面试
         const newCampaign = await Campaign.create(data, { transaction: t });
-        return {campaigns: newCampaign};
+        return { campaigns: newCampaign };
     });
 }
 
@@ -66,31 +66,31 @@ exports.updateCampaign = async (campaignId, data) => {
         if (!campaign) {
             throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
         }
-        if (!data.title && !data.description && !data.start_date && !data.end_date) {
-            throw new AppError('缺少必要的字段', 400, 'MISSING_FIELDS');
+        if ([data.title, data.description, data.start_date, data.end_date].every(v => v === undefined || v === null)) {
+            throw new AppError('至少需要一个字段', 400, 'MISSING_FIELDS');
         }
         // 检查是否有重复的面试
-        const existingCampaign = await Campaign.findOne({
-            where: {
-                id: {
-                    [Op.ne]: campaignId, // 排除当前面试
-                },
-                start_date: {
-                    [Op.lte]: data.end_date,
-                },
-                end_date: {
-                    [Op.gte]: data.start_date,
-                },
-            },
-            transaction: t
-        });
-        if (existingCampaign) {
-            throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'CAMPAIGN_CONFLICT');
-        }
+        // const existingCampaign = await Campaign.findOne({
+        //     where: {
+        //         id: {
+        //             [Op.ne]: campaignId, // 排除当前面试
+        //         },
+        //         start_date: {
+        //             [Op.lte]: data.end_date,
+        //         },
+        //         end_date: {
+        //             [Op.gte]: data.start_date,
+        //         },
+        //     },
+        //     transaction: t
+        // });
+        // if (existingCampaign) {
+        //     throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'CAMPAIGN_CONFLICT');
+        // }
         // 更新面试信息
         const updatedCampaign = await campaign.update(data, { transaction: t });
-        return {campaigns: updatedCampaign};
-    }); 
+        return { campaigns: updatedCampaign };
+    });
 }
 
 // 删除面试

@@ -4,6 +4,8 @@ const router = express.Router();
 
 // 获取阶段
 router.get('/', stageController.getAllStages);
+// 获取指定
+router.get('/:campaign_id', stageController.getAllStages);
 // 创建新的阶段
 router.post('/', stageController.createNewStage);
 // 更新阶段信息

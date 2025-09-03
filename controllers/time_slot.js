@@ -57,3 +57,17 @@ exports.updateTimeSlot = async (req, res, next) => {
         next(error);
     }
 }
+
+// 获取面试下所有时间段
+exports.getTimeSlotsByCampaignId = async (req, res, next) => {
+    try {
+        const campaignId = req.params.campaignId;
+        const result = await time_slotService.getTimeSlotsByCampaignId(campaignId);
+        if (!result.time_slots || result.time_slots.length === 0) {
+            return res.success(result, '没有查询到相关时间段', 'TIME_SLOT_NOT_FOUND');
+        }
+        return res.success(result, '查询成功', 'SUCCESS');
+    } catch (error) {
+        next(error);
+    }
+};

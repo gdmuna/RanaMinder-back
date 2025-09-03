@@ -20,7 +20,7 @@ exports.getTimeSlotsBySessionId = async (session_id) => {
     }
     const time_slots = await Time_slot.findAll({
         where: { session_id },
-        order: [['createdAt', 'DESC']],
+        order: [['createdAt', 'ASC']],
     });
     return {
         time_slots
@@ -48,46 +48,46 @@ exports.createNewTimeSlot = async (data) => {
     const end = new Date(end_time);
 
     // 检查时间顺序
-    if (start >= end) {
-        throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
-    }
+    // if (start >= end) {
+    //     throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+    // }
 
     // 检查时间段是否在session时间范围内
-    if (start < session.start_time || end > session.end_time) {
-        throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
-    }
+    // if (start < session.start_time || end > session.end_time) {
+    //     throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
+    // }
 
     // 检查时间段是否与已有时间段冲突
-    const existingTimeSlot = await Time_slot.findOne({
-        where: {
-            session_id,
-            [Op.or]: [
-                {
-                    start_time: {
-                        [Op.lt]: end,
-                        [Op.gte]: start
-                    }
-                },
-                {
-                    end_time: {
-                        [Op.lte]: end,
-                        [Op.gt]: start
-                    }
-                },
-                {
-                    start_time: {
-                        [Op.lte]: start
-                    },
-                    end_time: {
-                        [Op.gte]: end
-                    }
-                }
-            ]
-        }
-    });
-    if (existingTimeSlot) {
-        throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
-    }
+    // const existingTimeSlot = await Time_slot.findOne({
+    //     where: {
+    //         session_id,
+    //         [Op.or]: [
+    //             {
+    //                 start_time: {
+    //                     [Op.lt]: end,
+    //                     [Op.gte]: start
+    //                 }
+    //             },
+    //             {
+    //                 end_time: {
+    //                     [Op.lte]: end,
+    //                     [Op.gt]: start
+    //                 }
+    //             },
+    //             {
+    //                 start_time: {
+    //                     [Op.lte]: start
+    //                 },
+    //                 end_time: {
+    //                     [Op.gte]: end
+    //                 }
+    //             }
+    //         ]
+    //     }
+    // });
+    // if (existingTimeSlot) {
+    //     throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
+    // }
 
     // 创建新时间段
     const newTimeSlot = await Time_slot.create({
@@ -126,48 +126,48 @@ exports.updateTimeSlot = async (id, data) => {
         const end = end_time ? new Date(end_time) : timeSlot.end_time;
 
         // 检查时间顺序
-        if (start >= end) {
-            throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
-        }
+        // if (start >= end) {
+        //     throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+        // }
 
         // 检查时间段是否在session时间范围内
-        const session = await Session.findByPk(timeSlot.session_id);
-        if (start < session.start_time || end > session.end_time) {
-            throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
-        }
+        // const session = await Session.findByPk(timeSlot.session_id);
+        // if (start < session.start_time || end > session.end_time) {
+        //     throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
+        // }
 
         // 检查时间段是否与已有时间段冲突
-        const existingTimeSlot = await Time_slot.findOne({
-            where: {
-                session_id: timeSlot.session_id,
-                id: { [Op.ne]: id }, // 排除当前时间段
-                [Op.or]: [
-                    {
-                        start_time: {
-                            [Op.lt]: end,
-                            [Op.gte]: start
-                        }
-                    },
-                    {
-                        end_time: {
-                            [Op.lte]: end,
-                            [Op.gt]: start
-                        }
-                    },
-                    {
-                        start_time: {
-                            [Op.lte]: start
-                        },
-                        end_time: {
-                            [Op.gte]: end
-                        }
-                    }
-                ]
-            }
-        });
-        if (existingTimeSlot) {
-            throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
-        }
+        // const existingTimeSlot = await Time_slot.findOne({
+        //     where: {
+        //         session_id: timeSlot.session_id,
+        //         id: { [Op.ne]: id }, // 排除当前时间段
+        //         [Op.or]: [
+        //             {
+        //                 start_time: {
+        //                     [Op.lt]: end,
+        //                     [Op.gte]: start
+        //                 }
+        //             },
+        //             {
+        //                 end_time: {
+        //                     [Op.lte]: end,
+        //                     [Op.gt]: start
+        //                 }
+        //             },
+        //             {
+        //                 start_time: {
+        //                     [Op.lte]: start
+        //                 },
+        //                 end_time: {
+        //                     [Op.gte]: end
+        //                 }
+        //             }
+        //         ]
+        //     }
+        // });
+        // if (existingTimeSlot) {
+        //     throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
+        // }
 
         timeSlot.start_time = start;
         timeSlot.end_time = end;
@@ -183,5 +183,42 @@ exports.updateTimeSlot = async (id, data) => {
     }
     await timeSlot.save();
     return { time_slots: timeSlot };
+}
+
+/**
+ * @description 通过campaignId查找所有下属的时间段
+ * @param {number} campaignId - 面试ID
+ * @returns {Promise<Object>} 返回所有相关时间段
+ */
+exports.getTimeSlotsByCampaignId = async (campaignId) => {
+    const { Campaign, Stage, Session } = require('../models');
+    
+    // 检查面试是否存在
+    const campaign = await Campaign.findByPk(campaignId);
+    if (!campaign) {
+        throw new AppError('面试不存在', 404, 'CAMPAIGN_NOT_FOUND');
+    }
+    
+    // 查找所有关联的阶段、面试节点和时间段
+    const timeSlots = await Time_slot.findAll({
+        include: [
+            {
+                model: Session,
+                as: 'session',
+                required: true,
+                include: [
+                    {
+                        model: Stage,
+                        as: 'stage',
+                        required: true,
+                        where: { campaign_id: campaignId }
+                    }
+                ]
+            }
+        ],
+        order: [['start_time', 'ASC']]
+    });
+    
+    return { time_slots: timeSlots };
 }
 
