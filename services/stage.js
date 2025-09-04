@@ -19,7 +19,7 @@ exports.getAllStages = async (req) => {
         // 如果提供了campaign_id，则只查询该campaign的阶段
         stages = await Stage.findAll({
             where: { campaign_id },
-            order: [['sort_order', 'ASC']],
+            order: [['createdAt', 'DESC']],
         })
     } else {
         stages = await Stage.findAll({
