@@ -20,8 +20,8 @@ exports.sendResultMail = async (req, res, next) => {
         // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
         //     throw new AppError('您没有权限发送邮件', 403, 'NO_PERMISSION');
         // }
-        const { resultId, subject, content } = req.body;
-        const result = await mailService.sendResultMail(resultId, subject, content);
+        const { resultId, subject } = req.body;
+        const result = await mailService.sendResultMail(resultId, subject);
         res.success(result, '结果邮件发送成功', 'RESULT_MAIL_SEND_SUCCESS');
     } catch (error) {
         next(error);
