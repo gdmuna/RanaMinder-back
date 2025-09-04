@@ -34,7 +34,6 @@ exports.sendTestEmail = async (to) => {
  * @param {string} content 邮件正文
  */
 exports.sendResultMail = async (resultId, subject) => {
-    console.log("发送结果邮件，resultId:", resultId, "subject:", subject);
     // 支持单个或多个 id
     const ids = Array.isArray(resultId) ? resultId : [resultId];
     const results = [];

@@ -177,14 +177,17 @@ exports.createUserSelection = async (data) => {
             include: [{
                 model: Time_slot,
                 as: 'time_slot',
+                required: true,
                 include: [{
                     model: Session,
                     as: 'session',
-                    where: { stage_id: stageId }
+                    where: { stage_id: stageId },
+                    required: true
                 }]
             }],
             where: { user_id: uid }
         });
+        
         if (hasAssigned) {
             results.push({ user_id: uid, success: false, error: '该用户在本面试阶段已分配时间段，不能重复分配' });
             continue;

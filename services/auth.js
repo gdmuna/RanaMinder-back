@@ -14,7 +14,6 @@ exports.getLoginUrl = (req) => {
             req.headers.origin ||
             (req.headers.referer ? new URL(req.headers.referer).origin : null);
 
-            console.log('请求头中的 Origin:', origin);
         // 如果能识别到 origin，就替换成它的 loginCallback 路径
         if (origin) {
             redirectUri = `${origin}/loginCallback`;
