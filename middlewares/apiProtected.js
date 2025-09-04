@@ -44,17 +44,15 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({ where: { stu_id: userInfo.name } });
-    if (!user) {
-      // 如果用户不存在，创建新用户
-      await User.create({
-        stu_id: userInfo.name,
+    await User.findOrCreate({
+      where: { stu_id: userInfo.name },
+      defaults: {
         name: userInfo.displayName,
         sso_id: userInfo.id,
         avatar_url: userInfo.avatar,
         last_signin_time: new Date(),
-      });
-    }
+      }
+    });
       // 将用户信息存储在请求对象中
       req.user = userInfo;
       next();
