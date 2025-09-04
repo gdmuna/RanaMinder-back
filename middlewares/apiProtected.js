@@ -34,7 +34,7 @@ module.exports = async (req, res, next) => {
 
     // Bearer token 格式
     const token = authHeader.replace('Bearer ', '');
-    let userInfo = await casdoor.parseJwtToken(token);
+    const userInfo = await casdoor.parseJwtToken(token);
 
     // 检查用户信息是否存在
     if (!userInfo) {
