@@ -48,46 +48,14 @@ exports.createNewTimeSlot = async (data) => {
     const end = new Date(end_time);
 
     // 检查时间顺序
-    // if (start >= end) {
-    //     throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
-    // }
+    if (start >= end) {
+        throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+    }
 
     // 检查时间段是否在session时间范围内
-    // if (start < session.start_time || end > session.end_time) {
-    //     throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
-    // }
-
-    // 检查时间段是否与已有时间段冲突
-    // const existingTimeSlot = await Time_slot.findOne({
-    //     where: {
-    //         session_id,
-    //         [Op.or]: [
-    //             {
-    //                 start_time: {
-    //                     [Op.lt]: end,
-    //                     [Op.gte]: start
-    //                 }
-    //             },
-    //             {
-    //                 end_time: {
-    //                     [Op.lte]: end,
-    //                     [Op.gt]: start
-    //                 }
-    //             },
-    //             {
-    //                 start_time: {
-    //                     [Op.lte]: start
-    //                 },
-    //                 end_time: {
-    //                     [Op.gte]: end
-    //                 }
-    //             }
-    //         ]
-    //     }
-    // });
-    // if (existingTimeSlot) {
-    //     throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
-    // }
+    if (start < session.start_time || end > session.end_time) {
+        throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
+    }
 
     // 创建新时间段
     const newTimeSlot = await Time_slot.create({
@@ -103,12 +71,23 @@ exports.createNewTimeSlot = async (data) => {
 
 //删除时间段
 exports.deleteTimeSlot = async (id) => {
+  return await sequelize.transaction(async (t) => {
+    // 检查time_slot是否存在
     const timeSlot = await Time_slot.findByPk(id);
     if (!timeSlot) {
-        throw new AppError('时间段不存在', 404, 'TIME_SLOT_NOT_FOUND');
+      throw new AppError('时间段不存在', 404, 'TIME_SLOT_NOT_FOUND');
     }
-    await timeSlot.destroy();
+    
+    // 删除与该time_slot关联的所有user_selection
+    await sequelize.models.User_selection.destroy({ 
+      where: { time_slot_id: id }, 
+      transaction: t 
+    });
+    
+    // 最后删除time_slot
+    await timeSlot.destroy({ transaction: t });
     return { message: '时间段已删除' };
+  });
 }
 
 // 更新时间段
@@ -126,48 +105,15 @@ exports.updateTimeSlot = async (id, data) => {
         const end = end_time ? new Date(end_time) : timeSlot.end_time;
 
         // 检查时间顺序
-        // if (start >= end) {
-        //     throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
-        // }
+        if (start >= end) {
+            throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
+        }
 
         // 检查时间段是否在session时间范围内
-        // const session = await Session.findByPk(timeSlot.session_id);
-        // if (start < session.start_time || end > session.end_time) {
-        //     throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
-        // }
-
-        // 检查时间段是否与已有时间段冲突
-        // const existingTimeSlot = await Time_slot.findOne({
-        //     where: {
-        //         session_id: timeSlot.session_id,
-        //         id: { [Op.ne]: id }, // 排除当前时间段
-        //         [Op.or]: [
-        //             {
-        //                 start_time: {
-        //                     [Op.lt]: end,
-        //                     [Op.gte]: start
-        //                 }
-        //             },
-        //             {
-        //                 end_time: {
-        //                     [Op.lte]: end,
-        //                     [Op.gt]: start
-        //                 }
-        //             },
-        //             {
-        //                 start_time: {
-        //                     [Op.lte]: start
-        //                 },
-        //                 end_time: {
-        //                     [Op.gte]: end
-        //                 }
-        //             }
-        //         ]
-        //     }
-        // });
-        // if (existingTimeSlot) {
-        //     throw new AppError('时间段冲突，请选择其他时间段', 400, 'TIME_SLOT_CONFLICT');
-        // }
+        const session = await Session.findByPk(timeSlot.session_id);
+        if (start < session.start_time || end > session.end_time) {
+            throw new AppError('时间段必须在对应session的时间范围内', 400, 'TIME_SLOT_OUT_OF_SESSION');
+        }
 
         timeSlot.start_time = start;
         timeSlot.end_time = end;

@@ -23,7 +23,7 @@ exports.getAllStages = async (req) => {
         })
     } else {
         stages = await Stage.findAll({
-            order: [['createdAt', 'ASC']],
+            order: [['createdAt', 'DESC']],
         });
     }
     return {
@@ -101,12 +101,39 @@ exports.updateStage = async (id, data) => {
  * @returns {Promise<void>} 无返回值
  */
 exports.deleteStage = async (id) => {
+  return await sequelize.transaction(async (t) => {
     const stage = await Stage.findByPk(id);
     if (!stage) {
-        throw new AppError('阶段不存在', 404, 'STAGE_NOT_FOUND');
+      throw new AppError('阶段不存在', 404, 'STAGE_NOT_FOUND');
     }
 
-    // 删除阶段
-    await stage.destroy();
+    // 查找所有关联的session
+    const sessions = await sequelize.models.Session.findAll({ 
+      where: { stage_id: id }, 
+      transaction: t 
+    });
+    
+    // 级联删除session及其关联的time_slot和user_selection
+    for (const session of sessions) {
+      // 删除session下所有time_slot
+      const timeSlots = await sequelize.models.Time_slot.findAll({ 
+        where: { session_id: session.id }, 
+        transaction: t 
+      });
+      
+      for (const slot of timeSlots) {
+        // 删除time_slot下所有user_selection
+        await sequelize.models.User_selection.destroy({ 
+          where: { time_slot_id: slot.id }, 
+          transaction: t 
+        });
+        await slot.destroy({ transaction: t });
+      }
+      await session.destroy({ transaction: t });
+    }
+
+    // 最后删除stage
+    await stage.destroy({ transaction: t });
     return;
+  });
 }

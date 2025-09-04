@@ -129,41 +129,6 @@ exports.updateSession = async (id, data) => {
         throw new AppError('开始时间必须早于结束时间', 400, 'INVALID_TIME_RANGE');
     }
 
-    // 检查时间冲突
-    // if (data.start_time || data.end_time || data.stage_id) {
-    //     const conflict = await Session.findOne({
-    //         where: {
-    //             stage_id: targetStageId,
-    //             id: { [Op.ne]: id }, // 排除自己
-    //             [Op.or]: [
-    //                 {
-    //                     start_time: {
-    //                         [Op.lt]: newEnd,
-    //                         [Op.gte]: newStart
-    //                     }
-    //                 },
-    //                 {
-    //                     end_time: {
-    //                         [Op.lte]: newEnd,
-    //                         [Op.gt]: newStart
-    //                     }
-    //                 },
-    //                 {
-    //                     start_time: {
-    //                         [Op.lte]: newStart
-    //                     },
-    //                     end_time: {
-    //                         [Op.gte]: newEnd
-    //                     }
-    //                 }
-    //             ]
-    //         }
-    //     });
-    //     if (conflict) {
-    //         throw new AppError('面试时间冲突，请检查开始和结束时间', 409, 'SESSION_CONFLICT');
-    //     }
-    // }
-
     // 更新面试节点
     const updatedSession = await session.update(data);
     return {sessions: updatedSession};
@@ -175,11 +140,31 @@ exports.updateSession = async (id, data) => {
  * @returns {Promise<void>} 无返回值
  */
 exports.deleteSession = async (id) => {
+  return await sequelize.transaction(async (t) => {
     // 检查面试节点是否存在
     const session = await Session.findByPk(id);
     if (!session) {
-        throw new AppError('面试节点不存在', 404, 'SESSION_NOT_FOUND');
+      throw new AppError('面试节点不存在', 404, 'SESSION_NOT_FOUND');
     }
-    // 软删除面试节点
-    await session.destroy();
+    
+    // 查找所有关联的time_slot
+    const timeSlots = await sequelize.models.Time_slot.findAll({ 
+      where: { session_id: id }, 
+      transaction: t 
+    });
+    
+    // 级联删除time_slot和user_selection
+    for (const slot of timeSlots) {
+      // 删除time_slot下所有user_selection
+      await sequelize.models.User_selection.destroy({ 
+        where: { time_slot_id: slot.id }, 
+        transaction: t 
+      });
+      await slot.destroy({ transaction: t });
+    }
+    
+    // 最后删除session
+    await session.destroy({ transaction: t });
+    return;
+  });
 }
