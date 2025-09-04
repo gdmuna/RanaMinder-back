@@ -1,35 +1,16 @@
 const casdoorUtils = require('../utils/casdoorUtils');
 
 /**
- * 获取 Casdoor 登录授权链接（根据请求头动态设置 redirect_uri）
- * @param {object} req - Express 请求对象（可选）
+ * 获取 Casdoor 登录授权链接
  * @returns {string} 登录授权 URL
  */
-exports.getLoginUrl = (req) => {
-    let redirectUri = process.env.CASDOOR_REDIRECT_URL ;
-    console.log('headers:', req);
-    // 如果传入了 req 参数且包含 headers，则尝试获取 origin
-    if (req && req.headers) {
-        const origin =
-            req.headers.origin ||
-            (req.headers.referer ? new URL(req.headers.referer).origin : null);
-
-            console.log('请求头中的 Origin:', origin);
-        // 如果能识别到 origin，就替换成它的 loginCallback 路径
-        if (origin) {
-            redirectUri = `${origin}/loginCallback`;
-        }
-    }
-
-    return (
-        process.env.CASDOOR_ENDPOINT +
-        "/login/oauth/authorize" +
+exports.getLoginUrl = () => {
+    return process.env.CASDOOR_ENDPOINT + '/login/oauth/authorize' +
         `?client_id=${process.env.CASDOOR_CLIENT_ID}` +
         `&response_type=code` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+        `&redirect_uri=${process.env.CASDOOR_REDIRECT_URL}` +
         `&scope=read` +
-        `&state=${process.env.CASDOOR_STATE}`
-    );
+        `&state=${process.env.CASDOOR_STATE}`;
 };
 
 /**

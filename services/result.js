@@ -1,5 +1,6 @@
 const {Result,User} = require('../models');
 const AppError = require('../utils/AppError');
+const { Op } = require('sequelize');
 
 /**
  * @description 结果服务
@@ -20,16 +21,25 @@ exports.getAllResults = async (req) => {
         limit: pageSize,
     };
 
-    if(query.campaign_id) {
-        condition.where = { campaign_id: query.campaign_id };
+    // 查询 campaign_id 和 user_id 同时满足的结果
+    const where = {};
+    if (query.campaign_id) {
+        where.campaign_id = query.campaign_id;
     }
-    // 增加用户id筛选
-    if(query.user_id) {
-        condition.where = condition.where || {};
-        condition.where.user_id = query.user_id;
+    if (query.user_id) {
+        // 支持数组和单个 user_id
+        if (Array.isArray(query.user_id)) {
+            where.user_id = { [Op.in]: query.user_id };
+        } else {
+            where.user_id = query.user_id;
+        }
     }
-    
-    const { count, rows } = await Result.findAndCountAll(condition);
+
+    // 传递给 findAndCountAll
+    const { count, rows } = await Result.findAndCountAll({
+        ...condition,
+        where,
+    });
     const totalPages = Math.ceil(count / pageSize);
     return {
         pagination: {

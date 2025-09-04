@@ -1,5 +1,4 @@
 const casdoor = require('../config/casdoorConfigs');
-const { User } = require('../models');
 
 // 路由白名单
 const whiteList = [
@@ -44,28 +43,19 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({ where: { stu_id: userInfo.name } });
-    if (!user) {
-      // 如果用户不存在，创建新用户
-      await User.create({
-        stu_id: userInfo.name,
-        name: userInfo.displayName,
-        sso_id: userInfo.id,
-        avatar_url: userInfo.avatar,
-        last_signin_time: new Date(),
-      });
-    }
-      // 将用户信息存储在请求对象中
-      req.user = userInfo;
-      next();
-    } catch (error) {
-      console.error({
-        success: false,
-        '鉴权失败': error
-      });
-      res.status(500).json({
-        success: false,
-        error: '鉴权失败 无效Token'
-      });
-    }
-  } 
+    // 将用户信息存储在请求对象中
+    req.user = userInfo;
+
+    next();
+
+  } catch (error) {
+    console.error({
+      success: false,
+      '鉴权失败': error
+    });
+    res.status(500).json({
+      success: false,
+      error: '鉴权失败 无效Token'
+    });
+  }
+} 

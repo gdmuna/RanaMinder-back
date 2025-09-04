@@ -26,7 +26,7 @@ exports.handleCallBack = async function(code) {
                     sso_id: userInfo.id,
                     last_signin_time: new Date(),
                 });
-            } else {
+            }else {
                 // 如果用户已存在，更新最后登录时间
                 await User.update(
                     { last_signin_time: new Date() },
@@ -71,6 +71,10 @@ exports.getUserInfo = async function(accessToken) {
     try {
         const userInfo = await casdoor.parseJwtToken(accessToken);
         console.log('获取到的用户信息:', userInfo);
+        await User.update(
+                    { last_signin_time: new Date() },
+                    { where: { stu_id: userInfo.name } }
+                );
         return (userInfo);
     } catch (error) {
         console.error('获取用户信息失败:', error);
