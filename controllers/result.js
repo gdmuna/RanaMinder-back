@@ -9,19 +9,19 @@ const AppError = require('../utils/AppError');
 // 获取所有结果
 exports.getAllResults = async (req, res, next) => {
     try {
-        //  if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
-        // }
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency' || g === 'gdmu/Nekorify-admin')) {
+            throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
+        }
         // 支持通过 query.user_id 传递用户id进行筛选
         if (req.query.user_id) {
             req.query.user_id = req.query.user_id;
         }
-        const {results,pagination} = await ResultService.getAllResults(req);
+        const { results, pagination } = await ResultService.getAllResults(req);
         if (!results || results.length === 0) {
-            return res.success(results,'没有查询到相关结果', 'RESULT_NOT_FOUND');
+            return res.success(results, '没有查询到相关结果', 'RESULT_NOT_FOUND');
         }
-        
-        return res.success({pagination,results},'查询成功', 'SUCCESS');
+
+        return res.success({ pagination, results }, '查询成功', 'SUCCESS');
     } catch (error) {
         next(error);
     }
@@ -32,7 +32,7 @@ exports.getCurrentUserResults = async (req, res, next) => {
     try {
         const results = await ResultService.getCurrentUserResults(req);
         if (!results || results.length === 0) {
-            return res.success(results,'没有查询到相关结果', 'RESULT_NOT_FOUND');
+            return res.success(results, '没有查询到相关结果', 'RESULT_NOT_FOUND');
         }
         return res.success(results, '查询成功', 'SUCCESS');
     } catch (error) {
@@ -43,9 +43,9 @@ exports.getCurrentUserResults = async (req, res, next) => {
 // 修改结果
 exports.updateResult = async (req, res, next) => {
     try {
-        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限修改结果', 403, 'NO_PERMISSION');
-        // }
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency' || g === 'gdmu/Nekorify-admin')) {
+            throw new AppError('您没有权限修改结果', 403, 'NO_PERMISSION');
+        }
         const resultId = req.body.result_id;
         const data = req.body;
         const updatedResult = await ResultService.updateResult(resultId, data);

@@ -18,9 +18,9 @@ exports.getAllSessions = async (req, res, next) => {
 //创建面试节点
 exports.createNewSession = async (req, res, next) => {
     try {
-        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限创建面试节点', 403, 'NO_PERMISSION');
-        // }
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency' || g === 'gdmu/Nekorify-admin')) {
+            throw new AppError('您没有权限创建面试节点', 403, 'NO_PERMISSION');
+        }
         const data = req.body;
         const newSession = await sessionService.createNewSession(data);
         return res.success(newSession, '面试节点创建成功', 'SESSION_CREATED');
@@ -32,9 +32,9 @@ exports.createNewSession = async (req, res, next) => {
 //更新面试节点
 exports.updateSession = async (req, res, next) => {
     try {
-        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限更新面试节点', 403, 'NO_PERMISSION');
-        // }
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency' || g === 'gdmu/Nekorify-admin')) {
+            throw new AppError('您没有权限更新面试节点', 403, 'NO_PERMISSION');
+        }
         const sessionId = req.params.id;
         const data = req.body;
         const updatedSession = await sessionService.updateSession(sessionId, data);
@@ -47,9 +47,9 @@ exports.updateSession = async (req, res, next) => {
 //删除面试节点
 exports.deleteSession = async (req, res, next) => {
     try {
-        // if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency')) {
-        //     throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
-        // }
+        if (!req.user.groups.some(g => g === 'gdmu/ACM-presidency' || g === 'gdmu/NA-presidency' || g === 'gdmu/Nekorify-admin')) {
+            throw new AppError('您没有权限删除面试节点', 403, 'NO_PERMISSION');
+        }
         const sessionId = req.params.id;
         await sessionService.deleteSession(sessionId);
         return res.success(null, '面试节点删除成功', 'SESSION_DELETED');
