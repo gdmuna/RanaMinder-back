@@ -26,7 +26,7 @@ exports.handleCallBack = async function(code) {
                     sso_id: userInfo.id,
                     last_signin_time: new Date(),
                 });
-            }else {
+            } else {
                 // 如果用户已存在，更新最后登录时间
                 await User.update(
                     { last_signin_time: new Date() },
