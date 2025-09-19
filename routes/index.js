@@ -11,6 +11,7 @@ const resultRouter = require('./result');
 const uploadRouter = require('./upload');
 const mailRouter = require('./mail'); 
 const authRouter = require('./auth');
+const classworkRouter = require('./classwork');
 
 
 router.use('/auth', authRouter);
@@ -23,5 +24,6 @@ router.use('/user_selection', user_selectionRouter);
 router.use('/result', resultRouter);
 router.use('/upload', uploadRouter);
 router.use('/mail', mailRouter);
+router.use('/classwork', classworkRouter);
 
 module.exports = router;

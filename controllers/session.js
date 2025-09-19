@@ -1,5 +1,5 @@
 const sessionService = require('../services/session');
-const AppError = require('../utils/AppError'); // 添加这一行
+const AppError = require('../utils/AppError');
 
 //查询面试节点
 exports.getAllSessions = async (req, res, next) => {
