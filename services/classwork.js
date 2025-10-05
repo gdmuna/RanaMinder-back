@@ -12,5 +12,9 @@ exports.getUserNamesByTitles = async (titles) => {
 		attributes: ['stu_id', 'name']
 	});
 	const map = new Map(users.map(u => [u.stu_id, u.name]));
-	return titles.map(stu_id => map.get(stu_id) || null);
+	console.log('map123456789:', map);
+	return titles.map(stu_id => ({
+		stu_id,
+		name: map.get(stu_id) || null
+	}));
 }
